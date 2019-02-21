@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">szh</string>
+    <string name="test">test</string>
+
+    <string name="others_name">"其他"</string>
+    <integer name="timeThreshold">2</integer>
+    <integer name="valueNumberThreshold">4</integer>
+    <integer name="maxValueThreshold">20</integer>
+    <integer name="percentLabelThreshold">6</integer>
+
+    <string-array name="defaultTab">
+        <item>今日</item>
+        <item>本月</item>
+        <item>本周</item>
+        <item>昨天</item>
+    </string-array>
+
+    <string name="today">今日</string>
+    <string name="thisMonth">本月</string>
+    <string name="thisWeek">本周</string>
+    <string name="yesterday">昨天</string>
+
+    <string name="someDay">%d月%d日</string>
+    <string name="someDayInYear">%d年%d月%d日</string>
+    <string name="customDay">%d月%d日</string>
+
+    <string name="plan">提醒</string>
+    <string name="statistics">统计</string>
+    <string name="community">我</string>
+
+    <string name="defaultUnkownTab">未知</string>
+    <string name="unauthorizedMessage">获取权限失败</string>
+    <string name="resetAuth">重新设置</string>
+</resources>
