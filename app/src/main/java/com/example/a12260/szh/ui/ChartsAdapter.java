@@ -15,10 +15,14 @@ public class ChartsAdapter extends RecyclerView.Adapter {
     public static final int ONE_CHART = 0, TWO_CHART = 1;
     private List<List<View>> views;
     private List<Integer> viewTypes;
+    private int days;
+    private long startTime;
 
-    public ChartsAdapter(List<List<View>> views, List<Integer> viewTypes) {
+    public ChartsAdapter(List<List<View>> views, List<Integer> viewTypes, int days, long startTime) {
         this.views = views;
         this.viewTypes = viewTypes;
+        this.days = days;
+        this.startTime = startTime;
     }
 
     @Override
@@ -36,7 +40,7 @@ public class ChartsAdapter extends RecyclerView.Adapter {
         }
 
         if (viewType == TWO_CHART) {
-            return new OneChartViewHolder(
+            return new TwoChartViewHolder(
                     LayoutInflater.from(parent.getContext()).inflate(R.layout.two_chart, parent, false));
 
         }
@@ -47,13 +51,19 @@ public class ChartsAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         List<View> view = views.get(position);
+        view.forEach(x -> {
+            if (x.getParent() != null) {
+                ((ViewGroup)x.getParent()).removeView(x);
+            }
+        });
         if (holder instanceof TwoChartViewHolder) {
+            ChartsDependency.bindTwoCharts(view.get(0), view.get(1), startTime,days);
             ((ViewGroup)((TwoChartViewHolder) holder).chartDown).addView(view.get(0));
             ((ViewGroup)((TwoChartViewHolder) holder).chartUp).addView(view.get(1));
+
         }
 
         if (holder instanceof OneChartViewHolder) {
-
             ((ViewGroup)((OneChartViewHolder) holder).chart).addView(view.get(0));
         }
     }

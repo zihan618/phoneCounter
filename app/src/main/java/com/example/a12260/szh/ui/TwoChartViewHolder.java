@@ -14,8 +14,8 @@ public class TwoChartViewHolder extends RecyclerView.ViewHolder {
     public View chartDown;
     public TwoChartViewHolder(@NonNull View itemView) {
         super(itemView);
-        chartUp = itemView.findViewById(R.id.constraintLayout3);
-        chartDown = itemView.findViewById(R.id.constraintLayout2);
+        chartUp = itemView.findViewById(R.id.constraintLayout2);
+        chartDown = itemView.findViewById(R.id.constraintLayout3);
     }
 
 }

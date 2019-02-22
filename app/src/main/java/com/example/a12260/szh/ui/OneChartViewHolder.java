@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class OneChartViewHolder extends RecyclerView.ViewHolder {
+    //共享这个viewholder里面的容器达到动态添加图表的作用
     public View chart;
     public OneChartViewHolder(@NonNull View itemView) {
         super(itemView);

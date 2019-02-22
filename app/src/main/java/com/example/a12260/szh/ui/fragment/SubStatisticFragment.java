@@ -17,22 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SubStatisticFragment extends Fragment {
-    public View chart;
     public ChartsAdapter chartsAdapter;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragmenr_substatistic, container, false);
-    //    ViewParent parent = chart.getParent();
         RecyclerView recyclerView = view.findViewById(R.id.chartList);
         recyclerView.setLayoutManager(new LinearLayoutManager(MyApplication.getContext()));
         recyclerView.setAdapter(chartsAdapter);
-//        if ( parent!= null ) {
-//            if (parent instanceof ViewGroup) {
-//                ((ViewGroup)parent).removeView(chart);
-//            }
-//        }
-       // ((ViewGroup)view.getRootView()).addView(chart);
-
         return view;
     }
 
