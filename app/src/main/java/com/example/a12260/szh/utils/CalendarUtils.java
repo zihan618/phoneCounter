@@ -40,16 +40,19 @@ public class CalendarUtils {
 
     public static int getDayOfWeek(long timestamp) {
         Calendar calendar = Calendar.getInstance();
-        //calendar.setFirstDayOfWeek(Calendar.SUNDAY);
         calendar.setTimeInMillis(timestamp);
-        int res = (calendar.get(Calendar.DAY_OF_WEEK) + 6) % 7;
-        return res == 0 ? 7 : res;
+        int res = (calendar.get(Calendar.DAY_OF_WEEK) + 6) % 7 ;
+        //TODO: andriod API查询到的结果的时间区间有点问题， 暂时加一 先保证没有问题
+        //return res == 0 ? 7 : res;
+        int i = (res + 1) % 7;
+        return i == 0? 7 : i;
     }
 
     public static int getDayOfMonth(long timestamp) {
         Calendar calendar = Calendar.getInstance();
-        //calendar.setFirstDayOfWeek(Calendar.SUNDAY);
         calendar.setTimeInMillis(timestamp);
         return calendar.get(Calendar.DAY_OF_MONTH);
     }
+
+
 }

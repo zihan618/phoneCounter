@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 public class APIUsageProvider implements AbstractUsageProvider {
@@ -91,6 +92,7 @@ public class APIUsageProvider implements AbstractUsageProvider {
         Map<Integer, Long> map = new HashMap<>(usageStats.size());
         List<Long> res =new ArrayList<>(days);
         for (UsageStats usageStat: usageStats) {
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             System.out.println(String.format("本次时间： %d，第%d天， %s -- %s",
                     usageStat.getFirstTimeStamp(),
                     CalendarUtils.getDayOfWeek(usageStat.getFirstTimeStamp()),
@@ -139,6 +141,11 @@ public class APIUsageProvider implements AbstractUsageProvider {
     }
 
 
+    /**
+     * 将数据过滤到更适合显示
+     * @param list
+     * @return
+     */
     private List<UsageUnit> filterUsageData(List<UsageUnit> list) {
         int danwei = 60000;
         //数量小于阈值的时候直接范回
@@ -161,4 +168,5 @@ public class APIUsageProvider implements AbstractUsageProvider {
         res.add(others);
         return res;
     }
+
 }
