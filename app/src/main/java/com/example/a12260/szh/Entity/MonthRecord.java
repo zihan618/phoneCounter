@@ -6,14 +6,11 @@ import org.greenrobot.greendao.annotation.Generated;
 public class MonthRecord {
     private Long timestamp;
     private String packageName;
-    private String appName;
-    private String timeSpent;
-    @Generated(hash = 1897853176)
-    public MonthRecord(Long timestamp, String packageName, String appName,
-            String timeSpent) {
+    private Long timeSpent;
+    @Generated(hash = 1838692442)
+    public MonthRecord(Long timestamp, String packageName, Long timeSpent) {
         this.timestamp = timestamp;
         this.packageName = packageName;
-        this.appName = appName;
         this.timeSpent = timeSpent;
     }
     @Generated(hash = 1524030910)
@@ -31,16 +28,10 @@ public class MonthRecord {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
-    public String getAppName() {
-        return this.appName;
-    }
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-    public String getTimeSpent() {
+    public Long getTimeSpent() {
         return this.timeSpent;
     }
-    public void setTimeSpent(String timeSpent) {
+    public void setTimeSpent(Long timeSpent) {
         this.timeSpent = timeSpent;
     }
 }

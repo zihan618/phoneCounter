@@ -7,14 +7,11 @@ import org.greenrobot.greendao.annotation.Generated;
 public class WeekRecord {
     private Long timestamp;
     private String packageName;
-    private String appName;
-    private String timeSpent;
-    @Generated(hash = 360892271)
-    public WeekRecord(Long timestamp, String packageName, String appName,
-            String timeSpent) {
+    private Long timeSpent;
+    @Generated(hash = 150897922)
+    public WeekRecord(Long timestamp, String packageName, Long timeSpent) {
         this.timestamp = timestamp;
         this.packageName = packageName;
-        this.appName = appName;
         this.timeSpent = timeSpent;
     }
     @Generated(hash = 1197863028)
@@ -32,16 +29,10 @@ public class WeekRecord {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
-    public String getAppName() {
-        return this.appName;
-    }
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-    public String getTimeSpent() {
+    public Long getTimeSpent() {
         return this.timeSpent;
     }
-    public void setTimeSpent(String timeSpent) {
+    public void setTimeSpent(Long timeSpent) {
         this.timeSpent = timeSpent;
     }
 }

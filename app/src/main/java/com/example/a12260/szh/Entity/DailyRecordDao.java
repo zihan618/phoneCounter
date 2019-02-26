@@ -24,9 +24,10 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
     public static class Properties {
         public final static Property Timestamp = new Property(0, Long.class, "timestamp", false, "TIMESTAMP");
         public final static Property PackageName = new Property(1, String.class, "packageName", false, "PACKAGE_NAME");
-        public final static Property AppName = new Property(2, String.class, "appName", false, "APP_NAME");
-        public final static Property TimeSpent = new Property(3, String.class, "timeSpent", false, "TIME_SPENT");
+        public final static Property TimeSpent = new Property(2, Long.class, "timeSpent", false, "TIME_SPENT");
     }
+
+    private DaoSession daoSession;
 
 
     public DailyRecordDao(DaoConfig config) {
@@ -35,6 +36,7 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
     
     public DailyRecordDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -43,8 +45,7 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
         db.execSQL("CREATE TABLE " + constraint + "\"DAILY_RECORD\" (" + //
                 "\"TIMESTAMP\" INTEGER," + // 0: timestamp
                 "\"PACKAGE_NAME\" TEXT," + // 1: packageName
-                "\"APP_NAME\" TEXT," + // 2: appName
-                "\"TIME_SPENT\" TEXT);"); // 3: timeSpent
+                "\"TIME_SPENT\" INTEGER);"); // 2: timeSpent
     }
 
     /** Drops the underlying database table. */
@@ -67,14 +68,9 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
             stmt.bindString(2, packageName);
         }
  
-        String appName = entity.getAppName();
-        if (appName != null) {
-            stmt.bindString(3, appName);
-        }
- 
-        String timeSpent = entity.getTimeSpent();
+        Long timeSpent = entity.getTimeSpent();
         if (timeSpent != null) {
-            stmt.bindString(4, timeSpent);
+            stmt.bindLong(3, timeSpent);
         }
     }
 
@@ -92,15 +88,16 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
             stmt.bindString(2, packageName);
         }
  
-        String appName = entity.getAppName();
-        if (appName != null) {
-            stmt.bindString(3, appName);
-        }
- 
-        String timeSpent = entity.getTimeSpent();
+        Long timeSpent = entity.getTimeSpent();
         if (timeSpent != null) {
-            stmt.bindString(4, timeSpent);
+            stmt.bindLong(3, timeSpent);
         }
+    }
+
+    @Override
+    protected final void attachEntity(DailyRecord entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     @Override
@@ -113,8 +110,7 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
         DailyRecord entity = new DailyRecord( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // timestamp
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // packageName
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // appName
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // timeSpent
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2) // timeSpent
         );
         return entity;
     }
@@ -123,8 +119,7 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
     public void readEntity(Cursor cursor, DailyRecord entity, int offset) {
         entity.setTimestamp(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setPackageName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setAppName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setTimeSpent(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setTimeSpent(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
      }
     
     @Override

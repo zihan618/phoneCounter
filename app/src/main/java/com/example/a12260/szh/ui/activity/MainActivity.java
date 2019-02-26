@@ -13,9 +13,11 @@ import android.widget.Toolbar;
 
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.logic.UsageCollectService;
+import com.example.a12260.szh.logic.data_producer.APIUsageProvider;
 import com.example.a12260.szh.ui.BottomNavAdapter;
 import com.example.a12260.szh.ui.StatisticsAdapter;
 import com.example.a12260.szh.utils.MyApplication;
+import com.example.a12260.szh.utils.ServiceUtils;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -71,9 +73,6 @@ public class MainActivity extends AppCompatActivity {
         List<String> titles = Stream.of(getString(R.string.today),
                 getString(R.string.thisWeek),
                 getString(R.string.thisMonth)).collect(Collectors.toList());
-//        titles.forEach( x -> tabLayout.addTab(tabLayout.newTab().setText(x)));
-  //      viewPager.setAdapter(new StatisticsAdapter(getSupportFragmentManager(), new ArrayList<>(),titles));
-//        tabLayout.setupWithViewPager(viewPager);
         List<String> strings = Arrays.asList(getString(R.string.statistics),
                 getString(R.string.plan),
                 getString(R.string.community));
@@ -88,7 +87,13 @@ public class MainActivity extends AppCompatActivity {
         }
         System.out.println("====" + new Date());
         System.out.println("====" + new Date(Calendar.getInstance().getTimeInMillis()));
-        startService(new Intent(this, UsageCollectService.class));
+        if (!ServiceUtils.isServiceRunning(UsageCollectService.class)) {
+            System.out.println("现在正要开启服务");
+            startService(new Intent(this, UsageCollectService.class));
+        } else {
+            System.out.println("没有必要开启服务");
+        }
+        APIUsageProvider.getInstance().loadDataApiDataToDB();
     }
 
 }

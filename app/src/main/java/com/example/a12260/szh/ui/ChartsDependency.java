@@ -46,7 +46,6 @@ public class ChartsDependency {
                 LineChartData lineChartData = (LineChartData) chartsDependency.chartsData.get(pieChartView.getChartData());
                 Line line = lineChartData.getLines().get(0).setColor(ChartUtils.pickColor());
                 List<Long> dailyUsageList = APIUsageProvider.getInstance().getDailyUsageStatsInWeek(new String(value.getLabelAsChars()), CalendarUtils.getDay(startTime), day);
-                System.out.println("5678906789" + dailyUsageList.toString());
                 for (int i = 0; i < day; i++) {
                     PointValue pointValue = line.getValues().get(i);
                     Long aLong = dailyUsageList.get(i);

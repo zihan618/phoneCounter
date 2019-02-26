@@ -24,6 +24,7 @@ public class DaoMaster extends AbstractDaoMaster {
         DailyRecordDao.createTable(db, ifNotExists);
         MonthRecordDao.createTable(db, ifNotExists);
         WeekRecordDao.createTable(db, ifNotExists);
+        PackageAppDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -31,6 +32,7 @@ public class DaoMaster extends AbstractDaoMaster {
         DailyRecordDao.dropTable(db, ifExists);
         MonthRecordDao.dropTable(db, ifExists);
         WeekRecordDao.dropTable(db, ifExists);
+        PackageAppDao.dropTable(db, ifExists);
     }
 
     /**
@@ -52,6 +54,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(DailyRecordDao.class);
         registerDaoClass(MonthRecordDao.class);
         registerDaoClass(WeekRecordDao.class);
+        registerDaoClass(PackageAppDao.class);
     }
 
     public DaoSession newSession() {

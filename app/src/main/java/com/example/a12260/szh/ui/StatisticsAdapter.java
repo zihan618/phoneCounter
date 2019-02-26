@@ -130,18 +130,4 @@ public class StatisticsAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return titles.size();
     }
-
-    public static void main(String[] args) {
-        Calendar start = Calendar.getInstance();
-        start.set(Calendar.DAY_OF_MONTH, 1);
-        start.set(Calendar.HOUR_OF_DAY,0);
-        start.set(Calendar.MINUTE,0);
-        start.set(Calendar.SECOND,0);
-        start.set(Calendar.MILLISECOND,0);
-        System.out.println(new Date(start.getTimeInMillis()));
-        System.out.println(CalendarUtils.getDayOfMonth());
-        start.add(Calendar.DATE, 5);
-        System.out.println(new Date(start.getTimeInMillis()));
-    }
-
 }

@@ -3,19 +3,23 @@ package com.example.a12260.szh.Entity;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
 
-@Entity
+@Entity(active = true)
 public class DailyRecord {
     private Long timestamp;
     private String packageName;
-    private String appName;
-    private String timeSpent;
-    @Generated(hash = 384168263)
-    public DailyRecord(Long timestamp, String packageName, String appName,
-            String timeSpent) {
+    private Long timeSpent;
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 412338051)
+    private transient DailyRecordDao myDao;
+    @Generated(hash = 1162980715)
+    public DailyRecord(Long timestamp, String packageName, Long timeSpent) {
         this.timestamp = timestamp;
         this.packageName = packageName;
-        this.appName = appName;
         this.timeSpent = timeSpent;
     }
     @Generated(hash = 1812185311)
@@ -33,16 +37,49 @@ public class DailyRecord {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
-    public String getAppName() {
-        return this.appName;
-    }
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-    public String getTimeSpent() {
+    public Long getTimeSpent() {
         return this.timeSpent;
     }
-    public void setTimeSpent(String timeSpent) {
+    public void setTimeSpent(Long timeSpent) {
         this.timeSpent = timeSpent;
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 796727999)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDailyRecordDao() : null;
     }
 }
