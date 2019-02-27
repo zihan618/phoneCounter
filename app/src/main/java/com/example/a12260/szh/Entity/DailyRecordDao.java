@@ -13,7 +13,7 @@ import org.greenrobot.greendao.database.DatabaseStatement;
 /** 
  * DAO for table "DAILY_RECORD".
 */
-public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
+public class DailyRecordDao extends AbstractDao<DailyRecord, Long> {
 
     public static final String TABLENAME = "DAILY_RECORD";
 
@@ -22,9 +22,10 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Timestamp = new Property(0, Long.class, "timestamp", false, "TIMESTAMP");
-        public final static Property PackageName = new Property(1, String.class, "packageName", false, "PACKAGE_NAME");
-        public final static Property TimeSpent = new Property(2, Long.class, "timeSpent", false, "TIME_SPENT");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Timestamp = new Property(1, Long.class, "timestamp", false, "TIMESTAMP");
+        public final static Property PackageName = new Property(2, String.class, "packageName", false, "PACKAGE_NAME");
+        public final static Property TimeSpent = new Property(3, Long.class, "timeSpent", false, "TIME_SPENT");
     }
 
     private DaoSession daoSession;
@@ -43,9 +44,10 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"DAILY_RECORD\" (" + //
-                "\"TIMESTAMP\" INTEGER," + // 0: timestamp
-                "\"PACKAGE_NAME\" TEXT," + // 1: packageName
-                "\"TIME_SPENT\" INTEGER);"); // 2: timeSpent
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"TIMESTAMP\" INTEGER," + // 1: timestamp
+                "\"PACKAGE_NAME\" TEXT," + // 2: packageName
+                "\"TIME_SPENT\" INTEGER);"); // 3: timeSpent
     }
 
     /** Drops the underlying database table. */
@@ -57,40 +59,50 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, DailyRecord entity) {
         stmt.clearBindings();
+
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         Long timestamp = entity.getTimestamp();
         if (timestamp != null) {
-            stmt.bindLong(1, timestamp);
+            stmt.bindLong(2, timestamp);
         }
  
         String packageName = entity.getPackageName();
         if (packageName != null) {
-            stmt.bindString(2, packageName);
+            stmt.bindString(3, packageName);
         }
  
         Long timeSpent = entity.getTimeSpent();
         if (timeSpent != null) {
-            stmt.bindLong(3, timeSpent);
+            stmt.bindLong(4, timeSpent);
         }
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, DailyRecord entity) {
         stmt.clearBindings();
+
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         Long timestamp = entity.getTimestamp();
         if (timestamp != null) {
-            stmt.bindLong(1, timestamp);
+            stmt.bindLong(2, timestamp);
         }
  
         String packageName = entity.getPackageName();
         if (packageName != null) {
-            stmt.bindString(2, packageName);
+            stmt.bindString(3, packageName);
         }
  
         Long timeSpent = entity.getTimeSpent();
         if (timeSpent != null) {
-            stmt.bindLong(3, timeSpent);
+            stmt.bindLong(4, timeSpent);
         }
     }
 
@@ -101,42 +113,47 @@ public class DailyRecordDao extends AbstractDao<DailyRecord, Void> {
     }
 
     @Override
-    public Void readKey(Cursor cursor, int offset) {
-        return null;
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     @Override
     public DailyRecord readEntity(Cursor cursor, int offset) {
         DailyRecord entity = new DailyRecord( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // timestamp
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // packageName
-            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2) // timeSpent
+                cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+                cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // timestamp
+                cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // packageName
+                cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3) // timeSpent
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, DailyRecord entity, int offset) {
-        entity.setTimestamp(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setPackageName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setTimeSpent(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setTimestamp(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setPackageName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setTimeSpent(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
      }
     
     @Override
-    protected final Void updateKeyAfterInsert(DailyRecord entity, long rowId) {
-        // Unsupported or missing PK type
-        return null;
+    protected final Long updateKeyAfterInsert(DailyRecord entity, long rowId) {
+        entity.setId(rowId);
+        return rowId;
     }
     
     @Override
-    public Void getKey(DailyRecord entity) {
-        return null;
+    public Long getKey(DailyRecord entity) {
+        if (entity != null) {
+            return entity.getId();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public boolean hasKey(DailyRecord entity) {
-        // TODO
-        return false;
+        return entity.getId() != null;
     }
 
     @Override

@@ -3,11 +3,22 @@ package com.example.a12260.szh.logic;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.IntentService;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 import com.example.a12260.szh.logic.data_producer.APIUsageProvider;
+import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import androidx.annotation.Nullable;
 
@@ -15,29 +26,66 @@ import androidx.annotation.Nullable;
 public class UsageCollectService extends IntentService {
 
     boolean isStop = false;
+    UsageStatsManager usageService;// = (UsageStatsManager) getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
+
+    long lastTimestamp = 0;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
      */
     public UsageCollectService() {
         super("szhh");
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        usageService = (UsageStatsManager) getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
+    }
+
+    private String getForegroundPackage() {
+        long time = System.currentTimeMillis();
+        List<UsageStats> appList = usageService.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,
+                time - 1000 * 1000, time);
+        if (appList != null && appList.size() > 0) {
+            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+            for (UsageStats usageStats : appList) {
+                mySortedMap.put(usageStats.getLastTimeUsed(),
+                        usageStats);
+            }
+            if (!mySortedMap.isEmpty()) {
+                String currentApp = mySortedMap.get(
+                        mySortedMap.lastKey()).getPackageName();
+                return currentApp;
+            }
+        }
+        return null;
+    }
+
+    @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         while (!isStop) {
-            ActivityManager am = (ActivityManager) MyApplication.getContext()
-                    .getSystemService(Activity.ACTIVITY_SERVICE);
-            String packageName = am.getRunningTasks(1).get(0).topActivity
-                    .getPackageName();
-            String appName = APIUsageProvider.getInstance().getAppName(packageName);
-
+            String foregroundPack = getForegroundPackage();
+            if (StringUtils.isNotBlank(foregroundPack))
+                System.out.println(foregroundPack);
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+//            ActivityManager am = (ActivityManager) MyApplication.getContext()
+//                    .getSystemService(Activity.ACTIVITY_SERVICE);
+//            List<ActivityManager.RunningAppProcessInfo> tasks = am.getRunningAppProcesses();
+//            tasks.forEach(x -> System.out.println(x.processName));
+//            String packageName = am.getRunningTasks(1).get(0).topActivity
+//                    .getPackageName();
+//            long now = System.currentTimeMillis();
+//            GreenDaoUtils.getInstance().updateDailyRecord(packageName, now - lastTimestamp);
+//            lastTimestamp = now;
+//
+//            System.out.println(packageName);
+//            System.out.println(GreenDaoUtils.getInstance().getDailyRecordDao().loadAll());
     }
+
 }

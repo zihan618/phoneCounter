@@ -207,6 +207,6 @@ public class APIUsageProvider implements AbstractUsageProvider {
     }
 
     public static void main(String[] args) {
-        getInstance().loadDataApiDataToDB();
+        //  getInstance().loadDataApiDataToDB();
     }
 }

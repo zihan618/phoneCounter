@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             System.out.println("没有必要开启服务");
         }
-        APIUsageProvider.getInstance().loadDataApiDataToDB();
+        //  APIUsageProvider.getInstance().loadDataApiDataToDB();
     }
 
 }

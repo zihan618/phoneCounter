@@ -7,6 +7,8 @@ import org.greenrobot.greendao.DaoException;
 
 @Entity(active = true)
 public class DailyRecord {
+    @Id(autoincrement = true)
+    private Long id;
     private Long timestamp;
     private String packageName;
     private Long timeSpent;
@@ -16,14 +18,25 @@ public class DailyRecord {
     /** Used for active entity operations. */
     @Generated(hash = 412338051)
     private transient DailyRecordDao myDao;
-    @Generated(hash = 1162980715)
-    public DailyRecord(Long timestamp, String packageName, Long timeSpent) {
+
+    @Generated(hash = 34019572)
+    public DailyRecord(Long id, Long timestamp, String packageName,
+                       Long timeSpent) {
+        this.id = id;
         this.timestamp = timestamp;
         this.packageName = packageName;
         this.timeSpent = timeSpent;
     }
     @Generated(hash = 1812185311)
     public DailyRecord() {
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
     public Long getTimestamp() {
         return this.timestamp;
@@ -82,4 +95,6 @@ public class DailyRecord {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDailyRecordDao() : null;
     }
+
+
 }

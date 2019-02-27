@@ -48,7 +48,7 @@ public class GreenDaoUtils {
         return monthRecordDao;
     }
 
-    public void updateDailyRecord(String packageName, int time) {
+    public void updateDailyRecord(String packageName, long time) {
         //和上一次是同一个应用 直接更新即可
         if (packageName.equals(latestPackageName)) {
             latestDailyRecord.setTimeSpent(latestDailyRecord.getTimeSpent() + time);
@@ -57,17 +57,20 @@ public class GreenDaoUtils {
          else {
             latestPackageName = packageName;
             Long timestamp = CalendarUtils.getFirstTimestampOfDay(System.currentTimeMillis());
+            String id = timestamp + packageName;
             QueryBuilder<DailyRecord> queryBuilder = dailyRecordDao.queryBuilder();
+            System.out.println(timestamp);
+            System.out.println(packageName);
             List<DailyRecord> dailyRecords = queryBuilder
-                    .where(queryBuilder.and(DailyRecordDao.Properties.PackageName.eq(packageName),
-                            DailyRecordDao.Properties.Timestamp.eq(timestamp))).list();
+                    .where(queryBuilder.and(DailyRecordDao.Properties.Timestamp.eq(timestamp),
+                            DailyRecordDao.Properties.PackageName.eq(packageName))).list();
             //需要新建结构体
             if (dailyRecords.isEmpty()) {
                 System.out.println("需要新建");
                 latestDailyRecord = new DailyRecord();
                 latestDailyRecord.setPackageName(packageName);
                 latestDailyRecord.setTimeSpent(CalendarUtils.getFirstTimestampOfDay(System.currentTimeMillis()));
-                latestDailyRecord.setTimeSpent((long) time);
+                latestDailyRecord.setTimeSpent(time);
                 getDailyRecordDao().save(latestDailyRecord);
             } //不需要新建
              else {
@@ -113,7 +116,7 @@ public class GreenDaoUtils {
     }
 
     private GreenDaoUtils() {
-        mHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), "usage.db", null);
+        mHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), "usage3.db", null);
         db = mHelper.getWritableDatabase();
         // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
         mDaoMaster = new DaoMaster(db);
