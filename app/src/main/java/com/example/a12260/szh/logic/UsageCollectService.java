@@ -64,10 +64,19 @@ public class UsageCollectService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        long time;
+        long interval;
         while (!isStop) {
+            time = System.currentTimeMillis();
+            interval = lastTimestamp == 0 ? 5000 : time - lastTimestamp;
+            lastTimestamp = time;
             String foregroundPack = getForegroundPackage();
-            if (StringUtils.isNotBlank(foregroundPack))
-                System.out.println(foregroundPack);
+            if (StringUtils.isNotBlank(foregroundPack)) {
+                GreenDaoUtils.getInstance().updateDailyRecord(foregroundPack, interval);
+            } else {
+                System.out.println("无法获取前台app包名");
+            }
+
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {

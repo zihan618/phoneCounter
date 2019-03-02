@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">szh</string>
     <string name="test">test</string>
+    <string name="unknownAppName">未知</string>
 
     <string name="others_name">"其他"</string>
     <integer name="timeThreshold">2</integer>
@@ -31,4 +32,7 @@
     <string name="defaultUnkownTab">未知</string>
     <string name="unauthorizedMessage">获取权限失败</string>
     <string name="resetAuth">重新设置</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

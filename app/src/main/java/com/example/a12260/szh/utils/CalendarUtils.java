@@ -43,10 +43,7 @@ public class CalendarUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);
         int res = (calendar.get(Calendar.DAY_OF_WEEK) + 6) % 7 ;
-        //TODO: andriod API查询到的结果的时间区间有点问题， 暂时加一 先保证没有问题
         return res == 0 ? 7 : res;
-//        int i = (res + 1) % 7;
-//        return i == 0? 7 : i;
     }
 
 

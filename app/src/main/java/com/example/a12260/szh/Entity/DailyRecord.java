@@ -5,6 +5,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
+import java.util.Date;
+
 @Entity(active = true)
 public class DailyRecord {
     @Id(autoincrement = true)
@@ -12,6 +14,17 @@ public class DailyRecord {
     private Long timestamp;
     private String packageName;
     private Long timeSpent;
+
+    @Override
+    public String toString() {
+        return "DailyRecord{" +
+                "id=" + id +
+                ", timestamp=" + new Date(timestamp == null ? 0 : timestamp) +
+                ", packageName='" + packageName + '\'' +
+                ", timeSpent=" + timeSpent +
+                '}';
+    }
+
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;

@@ -19,10 +19,7 @@ import androidx.fragment.app.FragmentManager;
 public class MyApplication extends Application {
     private static Context context;
 
-
     public static FragmentManager fragmentManager;
-
-
 
     public void onCreate() {
         super.onCreate();
@@ -44,7 +41,8 @@ public class MyApplication extends Application {
         try {
             PackageManager packageManager = context.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
-            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+            // if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+            if (true) {
                 String result = packageInfo.applicationInfo.loadLabel(packageManager).toString();
                 AppPackageNameMapper.getInstance().register(packageName, result);
                 return result;
@@ -54,6 +52,4 @@ public class MyApplication extends Application {
         }
         return null;
     }
-
-
 }

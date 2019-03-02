@@ -31,44 +31,6 @@ public class APIUsageProvider implements AbstractUsageProvider {
 
     private static APIUsageProvider apiUsageProvider = new APIUsageProvider();
 
-    public  void loadDataApiDataToDB() {
-        //API 能提供的时间区间有限制
-        int dailyNumber = 7, weekNumber = 4, monthNumber = 6;
-        Calendar calendar = Calendar.getInstance();
-        long now = System.currentTimeMillis();
-        calendar.set(Calendar.HOUR_OF_DAY,0);
-        calendar.set(Calendar.MINUTE,0);
-        calendar.set(Calendar.SECOND,0);
-        calendar.set(Calendar.MILLISECOND,0);
-        calendar.add(Calendar.DATE, 1 - dailyNumber);
-        long sevenDayAgo = calendar.getTimeInMillis();
-        List<UsageStats> usageStats = usageService.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, sevenDayAgo, now);
-        usageStats.forEach(x-> System.out.printf("%s --- %s\n", new Date(x.getFirstTimeStamp()).toString(), new Date(x.getLastTimeStamp())));
-        System.out.println("---------");
-        calendar.setTimeInMillis(now);
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        calendar.set(Calendar.HOUR_OF_DAY,0);
-        calendar.set(Calendar.MINUTE,0);
-        calendar.set(Calendar.SECOND,0);
-        calendar.set(Calendar.MILLISECOND,0);
-        calendar.add(Calendar.DATE, -7 * (weekNumber - 1));
-        long fourWeekAgo = calendar.getTimeInMillis();
-        usageStats = usageService.queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, fourWeekAgo, now);
-        usageStats.forEach(x-> System.out.printf("%s --- %s\n", new Date(x.getFirstTimeStamp()).toString(), new Date(x.getLastTimeStamp())));
-        System.out.println("---------");
-        calendar.setTimeInMillis(now);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        calendar.set(Calendar.HOUR_OF_DAY,0);
-        calendar.set(Calendar.MINUTE,0);
-        calendar.set(Calendar.SECOND,0);
-        calendar.set(Calendar.MILLISECOND,0);
-        calendar.add(Calendar.MONTH, 1-monthNumber);
-        long sixMonthAgo = calendar.getTimeInMillis();
-        usageStats = usageService.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, sixMonthAgo, now);
-        usageStats.forEach(x-> System.out.printf("%s --- %s\n", new Date(x.getFirstTimeStamp()).toString(), new Date(x.getLastTimeStamp())));
-
-    }
-
     private UsageStatsManager usageService;
 
     private Context context;

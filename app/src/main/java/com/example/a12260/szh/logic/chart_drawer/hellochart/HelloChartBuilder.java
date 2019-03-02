@@ -5,6 +5,9 @@ import com.example.a12260.szh.model.chart.Chart;
 import com.example.a12260.szh.model.usage.UsageUnit;
 import com.example.a12260.szh.utils.MyApplication;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +36,60 @@ public class HelloChartBuilder {
     public static Function<UsageUnit, String> appNameMapper = x -> x.getAppName();
     public static Function<UsageUnit, Long> columnValueMaper = x -> x.getTimeSpent();
 
+    public static void buildPieChart(PieChartView pieChart, List<String> labels, long[] times) {
+        List<Long> longs = new ArrayList<>(times.length);
+        Arrays.stream(times).forEach(longs::add);
+        List<SliceValue> sliceList = new ArrayList<>();
+        if (labels.size() != longs.size()) {
+            System.out.println(labels.size() + "    " + longs.size());
+            System.out.println("长度不一样，先停了");
+            return;
+        }
+
+        Long allTime = longs.stream().reduce(0L, Long::sum);
+        List<String> appNames = new ArrayList<>(labels.size());
+
+        List<Double> percents = longs.stream().map(x -> x * 1.0 / allTime).collect(Collectors.toList());
+        Double percentThreshold = MyApplication.getContext().getResources().getInteger(R.integer.percentLabelThreshold) * 1.0 / 100;
+        for (int i = 0; i < labels.size(); i++) {
+            SliceValue sliceValue = new SliceValue(longs.get(i), ChartUtils.pickColor());
+            String appName = MyApplication.getAppName(labels.get(i));
+            // 根据包名获取app的名称
+            if (StringUtils.isNotBlank(appName)) {
+                appNames.add(appName);
+            } else {
+                appName = MyApplication.getContext().getString(R.string.unknownAppName);
+            }
+            //比例太小的话不显示名称
+            if (percents.get(i) >= percentThreshold) {
+                sliceValue.setLabel(appName);
+            } else {
+                sliceValue.setLabel("");
+            }
+            sliceList.add(sliceValue);
+        }
+        PieChartData pd = new PieChartData();//实例化PieChartData对象
+        pd.setValues(sliceList).setHasLabels(true).setHasCenterCircle(true)
+                .setCenterCircleScale(0.618F);//.setCenterText1("233sb").setCenterText2("6666");
+        pieChart.setPieChartData(pd);//将数据设
+        PieChartOnValueSelectListener listener = new PieChartOnValueSelectListener() {
+            @Override
+            public void onValueSelected(int arcIndex, SliceValue value) {
+
+                System.out.println(arcIndex);
+                System.out.println(value);
+                System.out.println("onValueSelected");
+            }
+
+            @Override
+            public void onValueDeselected() {
+                System.out.println("onValueDeselected");
+            }
+        };
+        pieChart.setValueSelectionEnabled(true);
+        pieChart.setViewportCalculationEnabled(true);
+        pieChart.setOnValueTouchListener(listener);
+    }
     //按照应用的使用时长画柱状图
     public static Chart buildBarChart(List<UsageUnit> usageUnits) {
         ColumnChartView barChart = new ColumnChartView(MyApplication.getContext());

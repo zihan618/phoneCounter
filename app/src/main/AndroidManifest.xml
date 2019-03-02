@@ -10,9 +10,9 @@
         android:allowBackup="true"
         android:icon="@drawable/statistic_"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--android:roundIcon="@mipmap/ic_launcher_round"-->
         <!--tools:replace="android:appComponentFactory"-->
         <!--android:appComponentFactory="szh"-->
 

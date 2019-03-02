@@ -2,24 +2,30 @@ package com.example.a12260.szh.ui;
 
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.model.chart.Chart;
 import com.example.a12260.szh.model.usage.UsageUnit;
 import com.example.a12260.szh.logic.chart_drawer.hellochart.HelloChartBuilder;
 import com.example.a12260.szh.logic.data_producer.APIUsageProvider;
+import com.example.a12260.szh.ui.fragment.DailyFragment;
 import com.example.a12260.szh.ui.fragment.SubStatisticFragment;
 import com.example.a12260.szh.utils.CalendarUtils;
+import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -61,22 +67,39 @@ public class StatisticsAdapter extends FragmentPagerAdapter {
         String tab = titles.get(position);
         Fragment fragment;
         if (tab.equals(context.getString(R.string.today))) {
-            Calendar start = Calendar.getInstance();
-            start.set(Calendar.HOUR,0);
-            start.set(Calendar.MINUTE,0);
-            start.set(Calendar.SECOND,0);
-            start.set(Calendar.MILLISECOND,0);
-            fragment = new SubStatisticFragment();
-            Calendar end = Calendar.getInstance();
-            Log.d("szh", String.format("start: %s, end: %s", start.toString(), end.toString()));
-            List<UsageUnit> usageUnits = APIUsageProvider.getInstance().getUsageStats(UsageStatsManager.INTERVAL_DAILY, start.getTimeInMillis(), end.getTimeInMillis());
-            Chart chart = HelloChartBuilder.buildPieChart(usageUnits);
+            DailyFragment dailyFragment = new DailyFragment();
+            List<DailyRecord> dailyRecords = GreenDaoUtils.getInstance().listDailyRecords(System.currentTimeMillis());
+            Bundle bundle = new Bundle();
+            List<String> names = new ArrayList<>(dailyRecords.size());
+            long[] longs = new long[dailyRecords.size()];
+            for (int i = 0; i < dailyRecords.size(); i++) {
+                String packName = dailyRecords.get(i).getPackageName();
+                names.add(packName);
+                longs[i] = (dailyRecords.get(i).getTimeSpent() / 60000);
+            }
+            //   System.out.println("reach here");
+            bundle.putStringArrayList("packNames", new ArrayList<>(names));
+            bundle.putLongArray("times", longs);
+            dailyFragment.setArguments(bundle);
+            return dailyFragment;
+//            Calendar start = Calendar.getInstance();
+//            start.set(Calendar.HOUR,0);
+//            start.set(Calendar.MINUTE,0);
+//            start.set(Calendar.SECOND,0);
+//            start.set(Calendar.MILLISECOND,0);
+//            fragment = new SubStatisticFragment();
+//            Calendar end = Calendar.getInstance();
+//            Log.d("szh", String.format("start: %s, end: %s", start.toString(), end.toString()));
+//            List<UsageUnit> usageUnits = APIUsageProvider.getInstance().getUsageStats(UsageStatsManager.INTERVAL_DAILY, start.getTimeInMillis(), end.getTimeInMillis());
+//            Chart chart = HelloChartBuilder.buildPieChart(usageUnits);
 
          //   Chart chart1 = HelloChartBuilder.buildBarChart(usageUnits);
-            ChartsAdapter chartsAdapter = new ChartsAdapter(Arrays.asList(Arrays.asList(chart.getChart())), Arrays.asList(ChartsAdapter.ONE_CHART), 1, start.getTimeInMillis());
+            //    ChartsAdapter chartsAdapter = new ChartsAdapter(Arrays.asList(Arrays.asList(chart.getChart())), Arrays.asList(ChartsAdapter.ONE_CHART), 1, start.getTimeInMillis());
 
          //   ((SubStatisticFragment)fragment).chart = chart.getChart();
-            ((SubStatisticFragment)fragment).chartsAdapter = chartsAdapter;
+            //   ((SubStatisticFragment)fragment).chartsAdapter = chartsAdapter;
+
+
 
 
 
