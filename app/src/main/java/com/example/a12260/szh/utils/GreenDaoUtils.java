@@ -61,7 +61,35 @@ public class GreenDaoUtils {
         return dailyRecordDao.queryBuilder().where(DailyRecordDao.Properties.Timestamp.eq(t)).list();
     }
 
+    private Map<String, List<DailyRecord>> listDailyRecordsInTimeRange(long start, long end) {
+        QueryBuilder<DailyRecord> queryBuilder = dailyRecordDao.queryBuilder();
+        List<DailyRecord> dailyRecords = queryBuilder
+                .where(queryBuilder.and(DailyRecordDao.Properties.Timestamp.ge(start),
+                        DailyRecordDao.Properties.Timestamp.lt(end))).list();
+        return dailyRecords.stream().collect(Collectors.groupingBy(DailyRecord::getPackageName));
+    }
+
+    public Map<String, List<DailyRecord>> listDailyRecordsInWeek(long start) {
+        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfWeek(start);
+        return listDailyRecordsInTimeRange(interval.getStart(), interval.getEnd());
+    }
+
+    public Map<String, List<DailyRecord>> listDailyRecordsInWeek() {
+        return listDailyRecordsInWeek(System.currentTimeMillis());
+    }
+
+    public Map<String, List<DailyRecord>> listDailyRecordsInMonth(long start) {
+        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfMonth(start);
+        return listDailyRecordsInTimeRange(interval.getStart(), interval.getEnd());
+    }
+
+
+    public Map<String, List<DailyRecord>> listDailyRecordsInMonth() {
+        return listDailyRecordsInMonth(System.currentTimeMillis());
+    }
+
     public void updateDailyRecord(String packageName, long time) {
+        System.out.println(packageName + "_____" + time);
         long now = System.currentTimeMillis();
         //和上一次是同一个应用 直接更新即可
         if (packageName.equals(latestPackageName)) {
@@ -74,7 +102,10 @@ public class GreenDaoUtils {
                     latestDailyRecord = list.get(0);
                 }
             }
+            System.out.println("之前的时间是:" + latestDailyRecord.getTimeSpent());
             latestDailyRecord.setTimeSpent(latestDailyRecord.getTimeSpent() + time);
+            System.out.println("现在的时间是：" + (latestDailyRecord.getTimeSpent() + time));
+
             latestDailyRecord.update();
         } //应用切换了  要更新一下这两个变量
         else {
@@ -87,7 +118,7 @@ public class GreenDaoUtils {
                 //system.out.println("需要新建");
                 latestDailyRecord = new DailyRecord();
                 latestDailyRecord.setPackageName(packageName);
-                latestDailyRecord.setTimeSpent(CalendarUtils.getFirstTimestampOfDay(System.currentTimeMillis()));
+                latestDailyRecord.setTimeSpent(time);
                 latestDailyRecord.setTimestamp(timestamp);
                 getDailyRecordDao().save(latestDailyRecord);
 //                if (dailyRecords.isEmpty()) {
@@ -106,6 +137,11 @@ public class GreenDaoUtils {
         }
         //system.out.println(MyApplication.getAppName(latestPackageName));
         //   dailyRecordDao.loadAll().forEach(//system.out::println);
+    }
+
+    public List<WeekRecord> listWeekRecords(long timestamp) {
+        long t = CalendarUtils.getFirstTimestampOfDay(timestamp);
+        return weekRecordDao.queryBuilder().where(WeekRecordDao.Properties.Timestamp.eq(t)).list();
     }
 
     private void doWeeklySummary(long timestamp) {
@@ -142,43 +178,43 @@ public class GreenDaoUtils {
         });
     }
 
-    public void insertMonthRecord(long startTimestamp ) {
-        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfMonth(startTimestamp);
-        QueryBuilder<DailyRecord> queryBuilder = getDailyRecordDao().queryBuilder();
-        queryBuilder.where( queryBuilder.and(
-                DailyRecordDao.Properties.Timestamp.ge(interval.getStart()), DailyRecordDao.Properties.Timestamp.lt(interval.getEnd())));
-        List<DailyRecord> list = queryBuilder.list();
-        Map<String, MonthRecord> map = new HashMap<>();
-        Collection<List<DailyRecord>> values = list.stream().collect(Collectors.groupingBy(DailyRecord::getPackageName)).values();
-        for (List<DailyRecord> records : values) {
-            MonthRecord monthRecord = new MonthRecord();
-            monthRecord.setTimestamp(interval.getStart());
-            monthRecord.setTimeSpent(records.stream().map(DailyRecord::getTimeSpent).reduce( 0L ,Long::sum));
-            monthRecord.setPackageName(records.get(0).getPackageName());
-            monthRecordDao.save(monthRecord);
-        }
+//    public void insertMonthRecord(long startTimestamp ) {
+//        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfMonth(startTimestamp);
+//        QueryBuilder<DailyRecord> queryBuilder = getDailyRecordDao().queryBuilder();
+//        queryBuilder.where( queryBuilder.and(
+//                DailyRecordDao.Properties.Timestamp.ge(interval.getStart()), DailyRecordDao.Properties.Timestamp.lt(interval.getEnd())));
+//        List<DailyRecord> list = queryBuilder.list();
+//        Map<String, MonthRecord> map = new HashMap<>();
+//        Collection<List<DailyRecord>> values = list.stream().collect(Collectors.groupingBy(DailyRecord::getPackageName)).values();
+//        for (List<DailyRecord> records : values) {
+//            MonthRecord monthRecord = new MonthRecord();
+//            monthRecord.setTimestamp(interval.getStart());
+//            monthRecord.setTimeSpent(records.stream().map(DailyRecord::getTimeSpent).reduce( 0L ,Long::sum));
+//            monthRecord.setPackageName(records.get(0).getPackageName());
+//            monthRecordDao.save(monthRecord);
+//        }
+//
+//    }
 
-    }
-
-    public void insertWeekRecord(long startTimestamp ) {
-        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfWeek(startTimestamp);
-        QueryBuilder<DailyRecord> queryBuilder = getDailyRecordDao().queryBuilder();
-        queryBuilder.where( queryBuilder.and(
-                DailyRecordDao.Properties.Timestamp.ge(interval.getStart()), DailyRecordDao.Properties.Timestamp.lt(interval.getEnd())));
-        List<DailyRecord> list = queryBuilder.list();
-        Map<String, MonthRecord> map = new HashMap<>();
-        Collection<List<DailyRecord>> values = list.stream().collect(Collectors.groupingBy(DailyRecord::getPackageName)).values();
-        for (List<DailyRecord> records : values) {
-            WeekRecord weekRecord = new WeekRecord();
-            weekRecord.setTimestamp(interval.getStart());
-            weekRecord.setTimeSpent(records.stream().map(DailyRecord::getTimeSpent).reduce( 0L ,Long::sum));
-            weekRecord.setPackageName(records.get(0).getPackageName());
-            weekRecordDao.save(weekRecord);
-        }
-    }
+//    public void insertWeekRecord(long startTimestamp ) {
+//        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfWeek(startTimestamp);
+//        QueryBuilder<DailyRecord> queryBuilder = getDailyRecordDao().queryBuilder();
+//        queryBuilder.where( queryBuilder.and(
+//                DailyRecordDao.Properties.Timestamp.ge(interval.getStart()), DailyRecordDao.Properties.Timestamp.lt(interval.getEnd())));
+//        List<DailyRecord> list = queryBuilder.list();
+//        Map<String, MonthRecord> map = new HashMap<>();
+//        Collection<List<DailyRecord>> values = list.stream().collect(Collectors.groupingBy(DailyRecord::getPackageName)).values();
+//        for (List<DailyRecord> records : values) {
+//            WeekRecord weekRecord = new WeekRecord();
+//            weekRecord.setTimestamp(interval.getStart());
+//            weekRecord.setTimeSpent(records.stream().map(DailyRecord::getTimeSpent).reduce( 0L ,Long::sum));
+//            weekRecord.setPackageName(records.get(0).getPackageName());
+//            weekRecordDao.save(weekRecord);
+//        }
+//    }
 
     private GreenDaoUtils() {
-        mHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), "usage4.db", null);
+        mHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), "usage6.db", null);
         db = mHelper.getWritableDatabase();
         // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
         mDaoMaster = new DaoMaster(db);

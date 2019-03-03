@@ -53,6 +53,12 @@ public class CalendarUtils {
         return calendar.get(Calendar.DAY_OF_MONTH);
     }
 
+    public static Interval getIntervalOfWeek() {
+        return getIntervalOfWeek(System.currentTimeMillis());
+    }
+
+
+
     public static Interval getIntervalOfWeek(long timestamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);
