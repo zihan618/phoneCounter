@@ -14,7 +14,10 @@ import com.example.a12260.szh.Entity.WeekRecordDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +77,32 @@ public class GreenDaoUtils {
         return listDailyRecordsInTimeRange(interval.getStart(), interval.getEnd());
     }
 
+    //换算成可以在折线图里面直接用的list
+    public List<Long> buildDailyTime(long start, int days, List<DailyRecord> records) {
+        Map<Long, Long> map = new HashMap<>(records.size());
+        records.forEach(x -> map.put(x.getTimestamp(), x.getTimeSpent()));
+        if (records.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Long> list = new ArrayList<>(31);
+        long end = records.get(records.size() - 1).getTimestamp();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(start);
+        do {
+            if (map.containsKey(start)) {
+                list.add(map.get(start));
+            } else {
+                list.add(0L);
+            }
+            calendar.add(Calendar.DATE, 1);
+            start = calendar.getTimeInMillis();
+        } while (start <= end);
+        while (list.size() < days) {
+            list.add(0L);
+        }
+        return list;
+    }
+
     public Map<String, List<DailyRecord>> listDailyRecordsInWeek() {
         return listDailyRecordsInWeek(System.currentTimeMillis());
     }
@@ -89,7 +118,7 @@ public class GreenDaoUtils {
     }
 
     public void updateDailyRecord(String packageName, long time) {
-        System.out.println(packageName + "_____" + time);
+        //   System.out.println(packageName + "_____" + time);
         long now = System.currentTimeMillis();
         //和上一次是同一个应用 直接更新即可
         if (packageName.equals(latestPackageName)) {
@@ -102,9 +131,9 @@ public class GreenDaoUtils {
                     latestDailyRecord = list.get(0);
                 }
             }
-            System.out.println("之前的时间是:" + latestDailyRecord.getTimeSpent());
+            //      System.out.println("之前的时间是:" + latestDailyRecord.getTimeSpent());
             latestDailyRecord.setTimeSpent(latestDailyRecord.getTimeSpent() + time);
-            System.out.println("现在的时间是：" + (latestDailyRecord.getTimeSpent() + time));
+            //      System.out.println("现在的时间是：" + (latestDailyRecord.getTimeSpent() + time));
 
             latestDailyRecord.update();
         } //应用切换了  要更新一下这两个变量
@@ -140,7 +169,10 @@ public class GreenDaoUtils {
     }
 
     public List<WeekRecord> listWeekRecords(long timestamp) {
-        long t = CalendarUtils.getFirstTimestampOfDay(timestamp);
+        long t = CalendarUtils.getIntervalOfWeek(timestamp).getStart();
+        List<WeekRecord> list = weekRecordDao.queryBuilder().where(WeekRecordDao.Properties.Timestamp.eq(t)).list();
+        list.forEach(x -> weekRecordDao.delete(x));
+        doWeeklySummary(t);
         return weekRecordDao.queryBuilder().where(WeekRecordDao.Properties.Timestamp.eq(t)).list();
     }
 

@@ -24,16 +24,17 @@ import androidx.viewpager.widget.ViewPager;
 
 import static com.example.a12260.szh.utils.MyApplication.fragmentManager;
 
+/**
+ * @author 12260
+ */
 public class MainStatisticsFragment extends Fragment {
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("dfff", "stasts");
         View view = inflater.inflate(R.layout.fragment_stastics, container, false);
         ViewPager viewPager = view.findViewById(R.id.viewpagerUp);
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
-        RecyclerView recyclerView = view.findViewById(R.id.chartList);
         List<String> titles = Stream.of(getString(R.string.today),
                 getString(R.string.thisWeek),
                 getString(R.string.thisMonth)).collect(Collectors.toList());

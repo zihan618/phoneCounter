@@ -28,14 +28,10 @@ import androidx.fragment.app.FragmentPagerAdapter;
  * 首页界面上 tablayout的 adapter
  */
 public class StatisticsAdapter extends FragmentPagerAdapter {
-    public static Calendar start;
-    public static int end;
-    public static View key;
     private FragmentManager fm;
     private List<String> titles;
     private Context context = MyApplication.getContext();
     private Map<Integer, Fragment> fragmentMap = new HashMap<>();
-
 
     public StatisticsAdapter(@NonNull FragmentManager fm, List<String> titles) {
         super(fm);
@@ -87,7 +83,7 @@ public class StatisticsAdapter extends FragmentPagerAdapter {
                 longs[i] = ((long) Math.ceil(weekRecords.get(i).getTimeSpent() * 1.0 / 60000));
             }
             bundle.putLong("start", CalendarUtils.getIntervalOfWeek().getStart());
-            bundle.putInt("days", 7);
+            bundle.putInt("days", CalendarUtils.getDayOfWeek());
             bundle.putStringArrayList("packNames", new ArrayList<>(names));
             bundle.putLongArray("times", longs);
             weeklyFragment.setArguments(bundle);

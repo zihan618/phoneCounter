@@ -8,12 +8,12 @@ public class CalendarUtils {
     static {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
     }
+
     /**
      * @return 返回7是星期日、1是星期一、2是星期二、3星期三、4是星期四、5是星期五、6是星期六
      */
-    public static int getTodayOfWeek() {
-        int res = (Calendar.getInstance().get(Calendar.DAY_OF_WEEK) + 6) % 7;
-        return res == 0? 7 : res;
+    public static int getDayOfWeek() {
+        return getDayOfWeek(System.currentTimeMillis());
     }
 
     public static int getDayOfMonth() {
@@ -34,7 +34,7 @@ public class CalendarUtils {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-      //  calendar.add(Calendar.DATE, -1);
+        //  calendar.add(Calendar.DATE, -1);
 
         return calendar.getTimeInMillis();
     }
@@ -42,7 +42,7 @@ public class CalendarUtils {
     public static int getDayOfWeek(long timestamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);
-        int res = (calendar.get(Calendar.DAY_OF_WEEK) + 6) % 7 ;
+        int res = (calendar.get(Calendar.DAY_OF_WEEK) + 6) % 7;
         return res == 0 ? 7 : res;
     }
 
@@ -58,17 +58,20 @@ public class CalendarUtils {
     }
 
 
-
     public static Interval getIntervalOfWeek(long timestamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);
+        //垃圾玩意儿， sunday是一周的第一天
+        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            calendar.add(Calendar.DATE, -7);
+        }
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         long start = calendar.getTimeInMillis();
-        calendar.add(Calendar.DATE,  7);
+        calendar.add(Calendar.DATE, 7);
         long end = calendar.getTimeInMillis();
         return new Interval(start, end);
     }
@@ -82,21 +85,22 @@ public class CalendarUtils {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         long start = calendar.getTimeInMillis();
-        calendar.add(Calendar.MONTH,  1);
+        calendar.add(Calendar.MONTH, 1);
         long end = calendar.getTimeInMillis();
         return new Interval(start, end);
     }
 
     public static void main(String[] args) {
-        System.out.println((getIntervalOfWeek(new Date().getTime())));
-        System.out.println((getIntervalOfMonth(new Date().getTime())));
+//        System.out.println((getIntervalOfWeek(new Date().getTime())));
+//        System.out.println((getIntervalOfMonth(new Date().getTime())));
     }
 
     public static class Interval {
         private long start;
         private long end;
+
         public boolean contains(long t) {
-            return  t >= start && t < end;
+            return t >= start && t < end;
         }
 
         public long getStart() {

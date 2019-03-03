@@ -51,7 +51,7 @@ public class DailyFragment extends Fragment {
         return view;
     }
 
-    void buildPieChart(List<String> labels, long[] times) {
+    private void buildPieChart(List<String> labels, long[] times) {
         System.out.println(times.length);
         Arrays.stream(times).forEach(System.out::println);
         System.out.println(labels);

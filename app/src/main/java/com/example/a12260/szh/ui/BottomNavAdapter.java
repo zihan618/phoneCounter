@@ -4,20 +4,23 @@ import android.content.Context;
 
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.ui.fragment.CommunityFragment;
-import com.example.a12260.szh.ui.fragment.PlanFragment;
 import com.example.a12260.szh.ui.fragment.MainStatisticsFragment;
+import com.example.a12260.szh.ui.fragment.PlanFragment;
 import com.example.a12260.szh.utils.MyApplication;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+/**
+ * @author 12260
+ */
 public class BottomNavAdapter extends FragmentPagerAdapter {
     private List<String> tabs;
     private Context context = MyApplication.getContext();
+
     public BottomNavAdapter(FragmentManager fm, List<String> tabs) {
         super(fm);
         this.tabs = tabs;
