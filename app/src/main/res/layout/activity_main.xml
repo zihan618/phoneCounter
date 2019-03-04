@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpagerDown"
         android:layout_width="match_parent"

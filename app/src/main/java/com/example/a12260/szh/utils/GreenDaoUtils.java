@@ -12,16 +12,11 @@ import com.example.a12260.szh.Entity.PackageApp;
 import com.example.a12260.szh.Entity.PackageAppDao;
 import com.example.a12260.szh.Entity.WeekRecord;
 import com.example.a12260.szh.Entity.WeekRecordDao;
-import com.example.a12260.szh.R;
 
-import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

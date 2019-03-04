@@ -1,13 +1,19 @@
 package com.example.a12260.szh.ui;
 
 import android.content.Context;
+import android.os.Bundle;
 
+import com.example.a12260.szh.Entity.WeekRecord;
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.ui.fragment.CommunityFragment;
 import com.example.a12260.szh.ui.fragment.MainStatisticsFragment;
 import com.example.a12260.szh.ui.fragment.PlanFragment;
+import com.example.a12260.szh.ui.fragment.WeeklyFragment;
+import com.example.a12260.szh.utils.CalendarUtils;
+import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
@@ -36,9 +42,9 @@ public class BottomNavAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int i) {
+    public Fragment getItem(int o) {
 
-        String selected = tabs.get(i);
+        String selected = tabs.get(o);
         if (context.getString(R.string.plan).equals(selected)) {
             return new PlanFragment();
         }

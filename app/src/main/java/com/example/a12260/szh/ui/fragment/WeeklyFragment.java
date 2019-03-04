@@ -48,9 +48,9 @@ public class WeeklyFragment extends Fragment {
     private int days;
     private List<String> packNames;
     private long[] times;
-    List<String> appNames;
-    Map<String, List<DailyRecord>> map;
-    List<Long> sumLineData;
+    private List<String> appNames;
+    private Map<String, List<DailyRecord>> map;
+    private List<Long> sumLineData;
 
     @Nullable
     @Override
