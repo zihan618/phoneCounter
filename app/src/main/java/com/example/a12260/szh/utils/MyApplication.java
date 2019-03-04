@@ -13,6 +13,7 @@ import com.example.a12260.szh.Entity.DaoMaster;
 import com.example.a12260.szh.Entity.DaoSession;
 import com.example.a12260.szh.Entity.MonthRecordDao;
 import com.example.a12260.szh.Entity.WeekRecordDao;
+import com.example.a12260.szh.R;
 
 import androidx.fragment.app.FragmentManager;
 
@@ -42,14 +43,12 @@ public class MyApplication extends Application {
             PackageManager packageManager = context.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
             // if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-            if (true) {
-                String result = packageInfo.applicationInfo.loadLabel(packageManager).toString();
-                AppPackageNameMapper.getInstance().register(packageName, result);
-                return result;
-            }
+            String result = packageInfo.applicationInfo.loadLabel(packageManager).toString();
+            AppPackageNameMapper.getInstance().register(packageName, result);
+            return result;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            return context.getString(R.string.unknownAppName);
         }
-        return null;
     }
 }

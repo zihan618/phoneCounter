@@ -73,8 +73,8 @@ public class WeeklyFragment extends Fragment {
         Arrays.stream(times).forEach(longs::add);
         List<SliceValue> sliceList = new ArrayList<>();
         if (packNames.size() != longs.size()) {
-            System.out.println(packNames.size() + "    " + longs.size());
-            System.out.println("长度不一样，先停了");
+//            System.out.println(packNames.size() + "    " + longs.size());
+//            System.out.println("长度不一样，先停了");
             return;
         }
 
@@ -85,7 +85,7 @@ public class WeeklyFragment extends Fragment {
         Double percentThreshold = MyApplication.getContext().getResources().getInteger(R.integer.percentLabelThreshold) * 1.0 / 100;
         for (int i = 0; i < packNames.size(); i++) {
             SliceValue sliceValue = new SliceValue(longs.get(i), ChartUtils.pickColor());
-            String appName = MyApplication.getAppName(packNames.get(i));
+            String appName = GreenDaoUtils.getInstance().getAppName(packNames.get(i));
             // 根据包名获取app的名称
             if (StringUtils.isNotBlank(appName)) {
                 appNames.add(appName);
@@ -187,14 +187,7 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void handleMessage(Message msg) {
                 String packName = (String) msg.obj;
-//                if (map.get() == null) {
-//                    map = new WeakReference<>(GreenDaoUtils.getInstance().listDailyRecordsInMonth(start));
-//                }
-                // List<DailyRecord> dailyRecords = map.get().get(packName);
                 List<DailyRecord> dailyRecords = map.get(packName);
-//                if (map.get() == null) {
-//
-//                }
                 List<Long> longs = GreenDaoUtils.getInstance().buildDailyTime(startTime, days, dailyRecords);
                 updateLineChart(longs);
 

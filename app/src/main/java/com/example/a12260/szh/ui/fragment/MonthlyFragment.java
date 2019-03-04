@@ -85,7 +85,7 @@ public class MonthlyFragment extends Fragment {
         Double percentThreshold = MyApplication.getContext().getResources().getInteger(R.integer.percentLabelThreshold) * 1.0 / 100;
         for (int i = 0; i < packNames.size(); i++) {
             SliceValue sliceValue = new SliceValue(longs.get(i), ChartUtils.pickColor());
-            String appName = MyApplication.getAppName(packNames.get(i));
+            String appName = GreenDaoUtils.getInstance().getAppName(packNames.get(i));
             // 根据包名获取app的名称
             if (StringUtils.isNotBlank(appName)) {
                 appNames.add(appName);

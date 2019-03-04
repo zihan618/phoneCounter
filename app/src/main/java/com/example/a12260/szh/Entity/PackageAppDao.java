@@ -40,7 +40,7 @@ public class PackageAppDao extends AbstractDao<PackageApp, String> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"PACKAGE_APP\" (" + //
                 "\"PACKAGE_NAME\" TEXT PRIMARY KEY NOT NULL ," + // 0: packageName
-                "\"APP_NAME\" TEXT UNIQUE );"); // 1: appName
+                "\"APP_NAME\" TEXT);"); // 1: appName
     }
 
     /** Drops the underlying database table. */

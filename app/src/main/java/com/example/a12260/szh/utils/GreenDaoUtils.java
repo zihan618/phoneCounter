@@ -8,10 +8,13 @@ import com.example.a12260.szh.Entity.DaoMaster;
 import com.example.a12260.szh.Entity.DaoSession;
 import com.example.a12260.szh.Entity.MonthRecord;
 import com.example.a12260.szh.Entity.MonthRecordDao;
+import com.example.a12260.szh.Entity.PackageApp;
 import com.example.a12260.szh.Entity.PackageAppDao;
 import com.example.a12260.szh.Entity.WeekRecord;
 import com.example.a12260.szh.Entity.WeekRecordDao;
+import com.example.a12260.szh.R;
 
+import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.File;
@@ -40,6 +43,15 @@ public class GreenDaoUtils {
     private String latestPackageName = "";
     private DailyRecord latestDailyRecord = null;
 
+    public String getAppName(String packageName) {
+        PackageApp packageApp = packageAppDao.queryBuilder().where(PackageAppDao.Properties.PackageName.eq(packageName)).unique();
+        if (packageApp == null) {
+            String appName = MyApplication.getAppName(packageName);
+            packageApp = new PackageApp(packageName, appName);
+            packageAppDao.save(packageApp);
+        }
+        return packageApp.getAppName();
+    }
     private List<DailyRecord> selectDailyRecord(long timestamp, String packageName) {
         QueryBuilder<DailyRecord> queryBuilder = dailyRecordDao.queryBuilder();
         List<DailyRecord> dailyRecords = queryBuilder
@@ -207,10 +219,6 @@ public class GreenDaoUtils {
 
     private GreenDaoUtils() {
         String dbName = "usage6.db";
-        File database = MyApplication.getContext().getDatabasePath(dbName);
-        if (database.exists()) {
-            System.out.println("数据库存在");
-        }
         mHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), dbName, null);
         db = mHelper.getWritableDatabase();
         // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
