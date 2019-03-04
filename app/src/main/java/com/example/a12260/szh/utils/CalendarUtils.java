@@ -90,6 +90,10 @@ public class CalendarUtils {
         return new Interval(start, end);
     }
 
+    public static Interval getIntervalOfMonth() {
+        return getIntervalOfMonth(System.currentTimeMillis());
+    }
+
     public static void main(String[] args) {
 //        System.out.println((getIntervalOfWeek(new Date().getTime())));
 //        System.out.println((getIntervalOfMonth(new Date().getTime())));

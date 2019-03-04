@@ -2,19 +2,19 @@ package com.example.a12260.szh.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
 
 import com.example.a12260.szh.Entity.DailyRecord;
+import com.example.a12260.szh.Entity.MonthRecord;
 import com.example.a12260.szh.Entity.WeekRecord;
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.ui.fragment.DailyFragment;
+import com.example.a12260.szh.ui.fragment.MonthlyFragment;
 import com.example.a12260.szh.ui.fragment.WeeklyFragment;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +56,7 @@ public class StatisticsAdapter extends FragmentPagerAdapter {
         Fragment fragment;
         if (tab.equals(context.getString(R.string.today))) {
             DailyFragment dailyFragment = new DailyFragment();
-            List<DailyRecord> dailyRecords = GreenDaoUtils.getInstance().listDailyRecords(System.currentTimeMillis());
+            List<DailyRecord> dailyRecords = GreenDaoUtils.getInstance().listDailyRecordsInDate(System.currentTimeMillis());
             Bundle bundle = new Bundle();
             List<String> names = new ArrayList<>(dailyRecords.size());
             long[] longs = new long[dailyRecords.size()];
@@ -73,7 +73,7 @@ public class StatisticsAdapter extends FragmentPagerAdapter {
         } else if (tab.equals(context.getString(R.string.thisWeek))) {
             WeeklyFragment weeklyFragment = new WeeklyFragment();
 
-            List<WeekRecord> weekRecords = GreenDaoUtils.getInstance().listWeekRecords(System.currentTimeMillis());
+            List<WeekRecord> weekRecords = GreenDaoUtils.getInstance().listWeekRecordsInWeek(System.currentTimeMillis());
             Bundle bundle = new Bundle();
             List<String> names = new ArrayList<>(weekRecords.size());
             long[] longs = new long[weekRecords.size()];
@@ -88,43 +88,23 @@ public class StatisticsAdapter extends FragmentPagerAdapter {
             bundle.putLongArray("times", longs);
             weeklyFragment.setArguments(bundle);
             return weeklyFragment;
-//            Calendar start = Calendar.getInstance();
-//            start.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-//            start.set(Calendar.HOUR_OF_DAY,0);
-//            start.set(Calendar.MINUTE,0);
-//            start.set(Calendar.SECOND,0);
-//            start.set(Calendar.MILLISECOND,0);
-//            fragment = new SubStatisticFragment();
-//             int end =  CalendarUtils.getTodayOfWeek();
-//            List<UsageUnit> usageUnits = APIUsageProvider.getInstance().getUsageStats(UsageStatsManager.INTERVAL_WEEKLY, start.getTimeInMillis(),Calendar.getInstance().getTimeInMillis());
-//            Chart pie1 = HelloChartBuilder.buildPieChart(usageUnits);
-//
-//            Chart line1 = HelloChartBuilder.buildBlankLineChart(CalendarUtils.getTodayOfWeek());
-//            ChartsAdapter chartsAdapter = new ChartsAdapter(Arrays.asList(Arrays.asList(pie1.getChart(), line1.getChart())), Arrays.asList(ChartsAdapter.TWO_CHART), end, start.getTimeInMillis());
-//            ((SubStatisticFragment)fragment).chartsAdapter = chartsAdapter;
-//            StatisticsAdapter.start = start;
-//            StatisticsAdapter.end = end;
         } else if (tab.equals(context.getString(R.string.thisMonth))) {
-//            Calendar start = Calendar.getInstance();
-//            start.set(Calendar.DAY_OF_MONTH, 1);
-//            start.set(Calendar.HOUR_OF_DAY,0);
-//            start.set(Calendar.MINUTE,0);
-//            start.set(Calendar.SECOND,0);
-//            start.set(Calendar.MILLISECOND,0);
-//            fragment = new SubStatisticFragment();
-//            int days = CalendarUtils.getDayOfMonth();
-//            List<UsageUnit> usageUnits = APIUsageProvider.getInstance().getUsageStats(UsageStatsManager.INTERVAL_MONTHLY, start.getTimeInMillis(), Calendar.getInstance().getTimeInMillis());
-//            Chart pie1 = HelloChartBuilder.buildPieChart(usageUnits);
-//            Chart line1 = HelloChartBuilder.buildBlankLineChart(CalendarUtils.getDayOfMonth());
-//            ChartsAdapter chartsAdapter = new ChartsAdapter(Arrays.asList(Arrays.asList(pie1.getChart(), line1.getChart())),
-//                    Arrays.asList(ChartsAdapter.TWO_CHART), days, start.getTimeInMillis());
-//           // ((SubStatisticFragment)fragment).chart = chart.getChart();
-//            ((SubStatisticFragment)fragment).chartsAdapter = chartsAdapter;
-//            StatisticsAdapter.start = start;
-//            StatisticsAdapter.end = days;
-            return new Fragment();
-//            FragmentTransaction transaction = fm.beginTransaction();
-//            transaction.commit();
+            MonthlyFragment monthlyFragment = new MonthlyFragment();
+            List<MonthRecord> monthRecords = GreenDaoUtils.getInstance().listMonthRecordsInMonth(System.currentTimeMillis());
+            Bundle bundle = new Bundle();
+            List<String> names = new ArrayList<>(monthRecords.size());
+            long[] longs = new long[monthRecords.size()];
+            for (int i = 0; i < monthRecords.size(); i++) {
+                String packName = monthRecords.get(i).getPackageName();
+                names.add(packName);
+                longs[i] = ((long) Math.ceil(monthRecords.get(i).getTimeSpent() * 1.0 / 60000));
+            }
+            bundle.putLong("start", CalendarUtils.getIntervalOfMonth().getStart());
+            bundle.putInt("days", CalendarUtils.getDayOfMonth());
+            bundle.putStringArrayList("packNames", new ArrayList<>(names));
+            bundle.putLongArray("times", longs);
+            monthlyFragment.setArguments(bundle);
+            return monthlyFragment;
         } else {
             fragment =  new Fragment();
         }

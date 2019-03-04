@@ -45,6 +45,7 @@ dependencies {
     implementation 'org.greenrobot:greendao:3.2.2'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'net.zetetic:android-database-sqlcipher:4.0.1@aar'
     //implementation 'androidx.cardview:cardview:1.0.0-rc02'
 
     // implementation 'com.afollestad.material-dialogs:core:2.0.0'
