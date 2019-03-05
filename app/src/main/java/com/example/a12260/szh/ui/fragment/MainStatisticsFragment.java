@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 
 import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.Entity.MonthRecord;
@@ -41,7 +42,6 @@ public class MainStatisticsFragment extends Fragment {
         inflater.inflate(R.menu.menu_statistics, menu);
         //TODO: 暂时先这么实现，等有更优雅的方法了再说
         onOptionsItemSelected(menu.getItem(0));
-        // menu.getItem(0).setChecked(true);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -115,4 +115,5 @@ public class MainStatisticsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_stastics, container, false);
         return view;
     }
+
 }

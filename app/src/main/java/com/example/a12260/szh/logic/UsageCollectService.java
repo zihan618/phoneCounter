@@ -84,7 +84,6 @@ public class UsageCollectService extends IntentService {
                     System.out.println("无法获取前台app包名");
                 }
             }
-
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {

@@ -20,25 +20,15 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author 12260
  */
 public class MainActivity extends AppCompatActivity {
-
-    @BindView(R.id.bottom)
-    BottomNavigationView bottomNavigationView;
-
-    @BindView(R.id.viewpagerDown)
-    ViewPager downPager;
 
     boolean hasAuth() {
         try {
@@ -65,10 +55,11 @@ public class MainActivity extends AppCompatActivity {
         }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ButterKnife.bind(this);
         List<String> strings = Arrays.asList(getString(R.string.statistics),
                 getString(R.string.plan),
                 getString(R.string.community));
+        ViewPager downPager = findViewById(R.id.viewpagerDown);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom);
         downPager.setAdapter(new BottomNavAdapter(getSupportFragmentManager(),strings));
         bottomNavigationView.setOnNavigationItemSelectedListener(x -> {
             int index = strings.indexOf(x.getTitle());

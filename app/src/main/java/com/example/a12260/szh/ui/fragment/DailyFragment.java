@@ -7,13 +7,16 @@ import android.view.ViewGroup;
 import android.widget.CalendarView;
 
 import com.example.a12260.szh.R;
+import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +32,7 @@ import lecho.lib.hellocharts.view.PieChartView;
 /**
  * @author 12260
  */
-public class DailyFragment extends Fragment {
+public class DailyFragment extends Fragment implements CalendarView.OnDateChangeListener {
     private CalendarView calendarView;
     private PieChartView pieChart;
 
@@ -105,7 +108,6 @@ public class DailyFragment extends Fragment {
                 pieChart.cancelDataAnimation();
                 pd.setCenterText1("总计").setCenterText2(Long.toString(allTime));
                 pieChart.startDataAnimation(300);
-                //    System.out.println("onValueDeselected");
             }
         };
         pieChart.setValueSelectionEnabled(true);
@@ -113,4 +115,18 @@ public class DailyFragment extends Fragment {
         pieChart.setOnValueTouchListener(listener);
     }
 
+    @Override
+    public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+        // LocalDateTime localDateTime = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, month);
+        long t = CalendarUtils.getFirstTimestampOfDay(calendar.getTimeInMillis());
+
+    }
+
+    private void refresh() {
+
+    }
 }
