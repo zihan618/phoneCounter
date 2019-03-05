@@ -42,7 +42,7 @@ public class DailyFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_daily, container, false);
+        View view = inflater.inflate(R.layout.fragment_one_chart, container, false);
         this.calendarView = view.findViewById(R.id.calendarView);
         this.pieChart = view.findViewById(R.id.dailyPieChart);
         Bundle bundle = getArguments();

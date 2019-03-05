@@ -55,9 +55,9 @@ public class MonthlyFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_monthly, container, false);
-        pieChart = view.findViewById(R.id.monthly_pie);
-        lineChart = view.findViewById(R.id.monthly_line);
+        View view = inflater.inflate(R.layout.fragment_two_charts, container, false);
+        pieChart = view.findViewById(R.id.pie);
+        lineChart = view.findViewById(R.id.line);
         Bundle bundle = getArguments();
         start = Objects.requireNonNull(bundle).getLong("start");
         days = bundle.getInt("days");

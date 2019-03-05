@@ -63,9 +63,8 @@ public class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        toolbar.inflateMenu(R.menu.menu_statistics);
-        // setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ButterKnife.bind(this);
         List<String> strings = Arrays.asList(getString(R.string.statistics),
                 getString(R.string.plan),
