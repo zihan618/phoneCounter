@@ -7,6 +7,7 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.example.a12260.szh.logic.data_producer.APIUsageProvider;
@@ -26,8 +27,8 @@ import androidx.annotation.Nullable;
 public class UsageCollectService extends IntentService {
 
     boolean isStop = false;
-    UsageStatsManager usageService;// = (UsageStatsManager) getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
-
+    UsageStatsManager usageService;
+    PowerManager powerManager;
     long lastTimestamp = 0;
 
     /**
@@ -41,6 +42,7 @@ public class UsageCollectService extends IntentService {
     public void onCreate() {
         super.onCreate();
         usageService = (UsageStatsManager) getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
+        powerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
     }
 
     private String getForegroundPackage() {
@@ -62,19 +64,25 @@ public class UsageCollectService extends IntentService {
         return null;
     }
 
+    boolean isScreenOn() {
+        return powerManager.isInteractive();
+    }
+
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         long time;
         long interval;
         while (!isStop) {
-            time = System.currentTimeMillis();
-            interval = lastTimestamp == 0 ? 5000 : time - lastTimestamp;
-            lastTimestamp = time;
-            String foregroundPack = getForegroundPackage();
-            if (StringUtils.isNotBlank(foregroundPack)) {
-                GreenDaoUtils.getInstance().updateDailyRecord(foregroundPack, interval);
-            } else {
-                System.out.println("无法获取前台app包名");
+            if (isScreenOn()) {
+                time = System.currentTimeMillis();
+                interval = lastTimestamp == 0 ? 5000 : time - lastTimestamp;
+                lastTimestamp = time;
+                String foregroundPack = getForegroundPackage();
+                if (StringUtils.isNotBlank(foregroundPack)) {
+                    GreenDaoUtils.getInstance().updateDailyRecord(foregroundPack, interval);
+                } else {
+                    System.out.println("无法获取前台app包名");
+                }
             }
 
             try {
