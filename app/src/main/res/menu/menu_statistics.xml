@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:title="@string/daily"
-        android:id="@+id/item_daily" />
-    <item
-        android:title="@string/weekly"
-        android:id="@+id/item_weekly" />
-    <item
-        android:title="@string/monthly"
-        android:id="@+id/item_monthly" />
+    <group android:checkableBehavior="single">
+
+        <item
+            android:title="@string/daily"
+            android:id="@+id/item_daily"
+            android:checked="true" />
+        <item
+            android:title="@string/weekly"
+            android:id="@+id/item_weekly" />
+        <item
+            android:title="@string/monthly"
+            android:id="@+id/item_monthly" />
+    </group>
     <item
         android:title="@string/share"
         android:id="@+id/item_share" />
