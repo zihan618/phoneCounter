@@ -1,23 +1,17 @@
 package com.example.a12260.szh.logic;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.IntentService;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
-import android.util.Log;
 
-import com.example.a12260.szh.logic.data_producer.APIUsageProvider;
 import com.example.a12260.szh.utils.GreenDaoUtils;
-import com.example.a12260.szh.utils.MyApplication;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
