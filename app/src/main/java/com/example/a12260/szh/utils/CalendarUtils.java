@@ -39,6 +39,11 @@ public class CalendarUtils {
         return calendar.getTimeInMillis();
     }
 
+    public static long getFirstTimestampOfDay() {
+        return getFirstTimestampOfDay(System.currentTimeMillis());
+    }
+
+
     public static int getDayOfWeek(long timestamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);

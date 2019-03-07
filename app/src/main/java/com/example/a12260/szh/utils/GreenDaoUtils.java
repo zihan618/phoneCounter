@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GreenDaoUtils {
@@ -66,6 +67,24 @@ public class GreenDaoUtils {
                 .where(queryBuilder.and(DailyRecordDao.Properties.Timestamp.ge(start),
                         DailyRecordDao.Properties.Timestamp.lt(end))).list();
         return dailyRecords.stream().collect(Collectors.groupingBy(DailyRecord::getPackageName));
+    }
+
+    //TODO: sql优化，排序其实没必要
+    public long getMinDate() {
+        // dailyRecordDao.queryBuilder().
+        Optional<Long> res = dailyRecordDao.loadAll().stream().map(DailyRecord::getTimestamp).min(Long::compareTo);
+        if (res.isPresent()) {
+            return res.get();
+        }
+        return CalendarUtils.getFirstTimestampOfDay();
+    }
+
+    public long getMaxDate() {
+        Optional<Long> res = dailyRecordDao.loadAll().stream().map(DailyRecord::getTimestamp).max(Long::compareTo);
+        if (res.isPresent()) {
+            return res.get();
+        }
+        return CalendarUtils.getFirstTimestampOfDay();
     }
 
     public Map<String, List<DailyRecord>> listDailyRecordsInWeek(long start) {

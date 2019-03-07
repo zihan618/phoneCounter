@@ -7,9 +7,12 @@ import android.view.ViewGroup;
 
 import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.R;
+import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
@@ -33,7 +36,7 @@ import lecho.lib.hellocharts.view.PieChartView;
 /**
  * @author 12260
  */
-public class DailyFragment extends Fragment implements OnDateSelectedListener {
+public class DailyFragment extends Fragment implements OnDateSelectedListener/*, DayViewDecorator*/ {
     private MaterialCalendarView calendarView;
     private PieChartView pieChart;
     private PieChartData pd;
@@ -47,6 +50,27 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener {
         //   ButterKnife.bind(this.getTargetFragment());
     }
 
+    class MyDayViewDecorator implements DayViewDecorator {
+        private long first;
+        private long last;
+
+        MyDayViewDecorator(long first, long last) {
+            this.first = first;
+            this.last = last;
+        }
+
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            long t = day.getCalendar().getTimeInMillis();
+            return !(t >= first && t <= last);
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.setDaysDisabled(true);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,14 +81,13 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener {
         Bundle bundle = getArguments();
         start = Objects.requireNonNull(bundle).getLong("start");
         calendarView.setDateSelected(new Date(start), true);
-//        List<String> strings = bundle.getStringArrayList("packNames");
-//        long[] longs = bundle.getLongArray("times");
         init();
         buildPieChart(start);
         return view;
     }
 
     private void init() {
+        //图标的基本样式设定 和 事件回调函数设置
         pd = new PieChartData();
         pd.setHasLabels(true).setHasCenterCircle(true)
                 .setCenterCircleScale(0.618F).setCenterText1FontSize(20);
@@ -88,6 +111,17 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener {
         pieChart.setValueSelectionEnabled(true);
         pieChart.setViewportCalculationEnabled(true);
         pieChart.setOnValueTouchListener(listener);
+
+
+        //calendarview的可选区间设置
+        long firstEnabledDay = GreenDaoUtils.getInstance().getMinDate();
+        long minDate = CalendarUtils.getIntervalOfMonth(firstEnabledDay).getStart();
+        long lastEnabledDay = Math.max(CalendarUtils.getFirstTimestampOfDay(), GreenDaoUtils.getInstance().getMaxDate());
+        long maxDate = CalendarUtils.getIntervalOfMonth(lastEnabledDay).getEnd() - 1;
+        System.out.println(new Date(minDate));
+        System.out.println(new Date(maxDate));
+        calendarView.state().edit().setMinimumDate(new Date(minDate)).setMaximumDate(new Date(maxDate)).commit();
+        calendarView.addDecorator(new MyDayViewDecorator(firstEnabledDay, lastEnabledDay));
     }
 
     private void buildPieChartData(long timestamp) {
@@ -130,27 +164,9 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener {
     }
 
     private void buildPieChart(long t) {
-        getArguments().putLong("start", t);
         buildPieChartData(t);
         //提前触发deselect的时间
         pieChart.getOnValueTouchListener().onValueDeselected();
-//        pieChart.cancelDataAnimation();
-//        pieChart.startDataAnimation(300);
-
-    }
-
-//    @Override
-//    public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-//        // LocalDateTime localDateTime = LocalDateTime.of(year, month, dayOfMonth, 0, 0);
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.YEAR, year);
-//        calendar.set(Calendar.MONTH, month);
-//        calendar.set(Calendar.DAY_OF_MONTH, month);
-//        long t = CalendarUtils.getFirstTimestampOfDay(calendar.getTimeInMillis());
-//
-//    }
-
-    private void refresh() {
 
     }
 

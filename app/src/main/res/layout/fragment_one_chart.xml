@@ -7,16 +7,17 @@
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendarView"
-        android:layout_width="386dp"
-        android:layout_height="333dp"
+        android:layout_width="388dp"
+        android:layout_height="380dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
-        app:mcv_weekDayLabels="@array/weekDays"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+        app:mcv_weekDayLabels="@array/weekDays" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout4"
