@@ -50,17 +50,11 @@ public class MainStatisticsFragment extends Fragment {
         x.setChecked(true);
         if (x.getItemId() == R.id.item_daily) {
             DailyFragment dailyFragment = new DailyFragment();
-            List<DailyRecord> dailyRecords = GreenDaoUtils.getInstance().listDailyRecordsInDate(System.currentTimeMillis());
             Bundle bundle = new Bundle();
-            List<String> names = new ArrayList<>(dailyRecords.size());
-            long[] longs = new long[dailyRecords.size()];
-            for (int i = 0; i < dailyRecords.size(); i++) {
-                String packName = dailyRecords.get(i).getPackageName();
-                names.add(packName);
-                longs[i] = ((long) Math.ceil(dailyRecords.get(i).getTimeSpent() * 1.0 / 60000));
-            }
-            bundle.putStringArrayList("packNames", new ArrayList<>(names));
-            bundle.putLongArray("times", longs);
+            bundle.putLong("start", CalendarUtils.getFirstTimestampOfDay(System.currentTimeMillis()));
+
+//            bundle.putStringArrayList("packNames", new ArrayList<>(names));
+//            bundle.putLongArray("times", longs);
             dailyFragment.setArguments(bundle);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.replace(R.id.statistic_container, dailyFragment, getString(R.string.daily));
