@@ -43,7 +43,7 @@ public class PlanDao extends AbstractDao<Plan, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"PLAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"TIME_TO_WARN\" INTEGER," + // 1: timeToWarn
@@ -52,9 +52,7 @@ public class PlanDao extends AbstractDao<Plan, Long> {
                 "\"EFFECTIVE\" INTEGER);"); // 4: effective
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"PLAN\"";
         db.execSQL(sql);
@@ -63,67 +61,67 @@ public class PlanDao extends AbstractDao<Plan, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, Plan entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         Integer timeToWarn = entity.getTimeToWarn();
         if (timeToWarn != null) {
             stmt.bindLong(2, timeToWarn);
         }
-
+ 
         Integer type = entity.getType();
         if (type != null) {
             stmt.bindLong(3, type);
         }
-
+ 
         Integer index = entity.getIndex();
         if (index != null) {
             stmt.bindLong(4, index);
         }
-
+ 
         Boolean effective = entity.getEffective();
         if (effective != null) {
-            stmt.bindLong(5, effective ? 1L : 0L);
+            stmt.bindLong(5, effective ? 1L: 0L);
         }
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, Plan entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         Integer timeToWarn = entity.getTimeToWarn();
         if (timeToWarn != null) {
             stmt.bindLong(2, timeToWarn);
         }
-
+ 
         Integer type = entity.getType();
         if (type != null) {
             stmt.bindLong(3, type);
         }
-
+ 
         Integer index = entity.getIndex();
         if (index != null) {
             stmt.bindLong(4, index);
         }
-
+ 
         Boolean effective = entity.getEffective();
         if (effective != null) {
-            stmt.bindLong(5, effective ? 1L : 0L);
+            stmt.bindLong(5, effective ? 1L: 0L);
         }
     }
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
-    }
+    }    
 
     @Override
     public Plan readEntity(Cursor cursor, int offset) {
@@ -136,7 +134,7 @@ public class PlanDao extends AbstractDao<Plan, Long> {
         );
         return entity;
     }
-
+     
     @Override
     public void readEntity(Cursor cursor, Plan entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
@@ -144,14 +142,14 @@ public class PlanDao extends AbstractDao<Plan, Long> {
         entity.setType(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setIndex(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
         entity.setEffective(cursor.isNull(offset + 4) ? null : cursor.getShort(offset + 4) != 0);
-    }
-
+     }
+    
     @Override
     protected final Long updateKeyAfterInsert(Plan entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     @Override
     public Long getKey(Plan entity) {
         if (entity != null) {
@@ -170,5 +168,5 @@ public class PlanDao extends AbstractDao<Plan, Long> {
     protected final boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }

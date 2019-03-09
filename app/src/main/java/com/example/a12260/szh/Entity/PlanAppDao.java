@@ -41,16 +41,14 @@ public class PlanAppDao extends AbstractDao<PlanApp, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"PLAN_APP\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"PLAN_ID\" INTEGER," + // 1: planID
                 "\"PACKAGE_NAME\" TEXT);"); // 2: packageName
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"PLAN_APP\"";
         db.execSQL(sql);
@@ -59,17 +57,17 @@ public class PlanAppDao extends AbstractDao<PlanApp, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, PlanApp entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         Long planID = entity.getPlanID();
         if (planID != null) {
             stmt.bindLong(2, planID);
         }
-
+ 
         String packageName = entity.getPackageName();
         if (packageName != null) {
             stmt.bindString(3, packageName);
@@ -79,17 +77,17 @@ public class PlanAppDao extends AbstractDao<PlanApp, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, PlanApp entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         Long planID = entity.getPlanID();
         if (planID != null) {
             stmt.bindLong(2, planID);
         }
-
+ 
         String packageName = entity.getPackageName();
         if (packageName != null) {
             stmt.bindString(3, packageName);
@@ -99,7 +97,7 @@ public class PlanAppDao extends AbstractDao<PlanApp, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
-    }
+    }    
 
     @Override
     public PlanApp readEntity(Cursor cursor, int offset) {
@@ -110,20 +108,20 @@ public class PlanAppDao extends AbstractDao<PlanApp, Long> {
         );
         return entity;
     }
-
+     
     @Override
     public void readEntity(Cursor cursor, PlanApp entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setPlanID(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
         entity.setPackageName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-    }
-
+     }
+    
     @Override
     protected final Long updateKeyAfterInsert(PlanApp entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     @Override
     public Long getKey(PlanApp entity) {
         if (entity != null) {
@@ -142,5 +140,5 @@ public class PlanAppDao extends AbstractDao<PlanApp, Long> {
     protected final boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }

@@ -81,6 +81,12 @@ public class CalendarUtils {
         return new Interval(start, end);
     }
 
+    /**
+     * 这周过了多少天了，包括今天
+     *
+     * @param t
+     * @return
+     */
     public static int getDaysPastInWeek(long t) {
         Interval interval = getIntervalOfWeek();
         if (t >= interval.getStart()) {
@@ -88,6 +94,25 @@ public class CalendarUtils {
         }
         if (t < interval.getStart()) {
             return 7;
+        }
+        return 0;
+    }
+
+    /**
+     * 这月过了多少天了，包括今天
+     *
+     * @param t
+     * @return
+     */
+    public static int getDaysPastInMonth(long t) {
+        Interval interval = getIntervalOfMonth();
+        if (t >= interval.getStart()) {
+            return getDayOfMonth();
+        }
+        if (t < interval.getStart()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(t);
+            return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         }
         return 0;
     }
@@ -111,7 +136,7 @@ public class CalendarUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(getDaysPastInWeek(System.currentTimeMillis()));
+        System.out.println(getDaysPastInMonth(System.currentTimeMillis()));
 //        System.out.println((getIntervalOfWeek(new Date().getTime())));
 //        System.out.println((getIntervalOfMonth(new Date().getTime())));
     }
