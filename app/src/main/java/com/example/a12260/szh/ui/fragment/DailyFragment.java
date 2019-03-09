@@ -167,7 +167,6 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
         buildPieChartData(t);
         //提前触发deselect的时间
         pieChart.getOnValueTouchListener().onValueDeselected();
-
     }
 
     @Override

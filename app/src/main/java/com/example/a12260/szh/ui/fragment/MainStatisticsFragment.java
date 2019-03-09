@@ -52,9 +52,6 @@ public class MainStatisticsFragment extends Fragment {
             DailyFragment dailyFragment = new DailyFragment();
             Bundle bundle = new Bundle();
             bundle.putLong("start", CalendarUtils.getFirstTimestampOfDay(System.currentTimeMillis()));
-
-//            bundle.putStringArrayList("packNames", new ArrayList<>(names));
-//            bundle.putLongArray("times", longs);
             dailyFragment.setArguments(bundle);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.replace(R.id.statistic_container, dailyFragment, getString(R.string.daily));

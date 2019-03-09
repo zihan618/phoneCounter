@@ -81,6 +81,17 @@ public class CalendarUtils {
         return new Interval(start, end);
     }
 
+    public static int getDaysPastInWeek(long t) {
+        Interval interval = getIntervalOfWeek();
+        if (t >= interval.getStart()) {
+            return getDayOfWeek();
+        }
+        if (t < interval.getStart()) {
+            return 7;
+        }
+        return 0;
+    }
+
     public static Interval getIntervalOfMonth(long timestamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);
@@ -100,6 +111,7 @@ public class CalendarUtils {
     }
 
     public static void main(String[] args) {
+        System.out.println(getDaysPastInWeek(System.currentTimeMillis()));
 //        System.out.println((getIntervalOfWeek(new Date().getTime())));
 //        System.out.println((getIntervalOfMonth(new Date().getTime())));
     }
