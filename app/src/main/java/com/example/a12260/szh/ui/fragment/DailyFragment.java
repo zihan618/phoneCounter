@@ -10,6 +10,7 @@ import com.example.a12260.szh.R;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
+import com.example.a12260.szh.utils.PieChartColorProvider;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
@@ -93,6 +94,7 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
                 .setCenterCircleScale(0.618F).setCenterText1FontSize(20);
         pd.setHasCenterCircle(true);
         pieChart.setPieChartData(pd);
+        pd.setSlicesSpacing(1);
         PieChartOnValueSelectListener listener = new PieChartOnValueSelectListener() {
             @Override
             public void onValueSelected(int arcIndex, SliceValue value) {
@@ -128,6 +130,7 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
 
     private void buildPieChartData(long timestamp) {
         List<DailyRecord> dailyRecords = GreenDaoUtils.getInstance().listDailyRecordsInDate(timestamp);
+        dailyRecords.sort((x, y) -> -Long.compare(x.getTimeSpent(), y.getTimeSpent()));
         List<String> packNames = new ArrayList<>(dailyRecords.size());
         List<Long> minutes = new ArrayList<>(dailyRecords.size());
         for (int i = 0; i < dailyRecords.size(); i++) {
@@ -145,8 +148,9 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
 
         List<Double> percents = minutes.stream().map(x -> x * 1.0 / sum).collect(Collectors.toList());
         Double percentThreshold = MyApplication.getContext().getResources().getInteger(R.integer.percentLabelThreshold) * 1.0 / 100;
+        List<Integer> colors = PieChartColorProvider.getColors(dailyRecords.size());
         for (int i = 0; i < packNames.size(); i++) {
-            SliceValue sliceValue = new SliceValue(minutes.get(i), ChartUtils.pickColor());
+            SliceValue sliceValue = new SliceValue(minutes.get(i), getResources().getColor(colors.get(i), null));
             String appName = GreenDaoUtils.getInstance().getAppName(packNames.get(i));
             // 根据包名获取app的名称
             if (StringUtils.isNotBlank(appName)) {
