@@ -102,8 +102,13 @@ public class MainActivity extends AppCompatActivity {
         if (!hasAuth()) {
             startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         }
-        System.out.println("====" + new Date());
-        System.out.println("====" + new Date(Calendar.getInstance().getTimeInMillis()));
+        //android 8 以后的前台服务开启不一样
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(this, UsageCollectService.class));
+        } else {
+            startService(new Intent(this, UsageCollectService.class));
+        }
+
         if (!ServiceUtils.isServiceRunning(UsageCollectService.class)) {
             System.out.println("现在正要开启服务");
             startService(new Intent(this, UsageCollectService.class));
