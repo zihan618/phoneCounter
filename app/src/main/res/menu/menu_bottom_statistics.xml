@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_daily"
+        android:icon="@drawable/daily"
+        android:title="@string/daily" />
+    <item
+        android:id="@+id/navigation_weekly"
+        android:icon="@drawable/weekly"
+        android:title="@string/weekly" />
+    <item
+        android:id="@+id/navigation_monthly"
+        android:icon="@drawable/monthly"
+        android:title="@string/monthly" />
+</menu>

@@ -11,7 +11,7 @@ import android.provider.Settings;
 
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.logic.UsageCollectService;
-import com.example.a12260.szh.ui.BottomNavAdapter;
+import com.example.a12260.szh.ui.OnlyStatisticBottomAdapter;
 import com.example.a12260.szh.utils.MyApplication;
 import com.example.a12260.szh.utils.ServiceUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -55,12 +55,45 @@ public class MainActivity extends AppCompatActivity {
         }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        List<String> strings = Arrays.asList(getString(R.string.statistics),
-                getString(R.string.plan),
-                getString(R.string.community));
+//        List<String> strings = Arrays.asList(getString(R.string.statistics),
+//                getString(R.string.plan),
+//                getString(R.string.community));
+        List<String> strings = Arrays.asList(getString(R.string.daily),
+                getString(R.string.weekly),
+                getString(R.string.monthly));
         ViewPager downPager = findViewById(R.id.viewpagerDown);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom);
-        downPager.setAdapter(new BottomNavAdapter(getSupportFragmentManager(),strings));
+        downPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        bottomNavigationView.setSelectedItemId(R.id.navigation_daily);
+                        break;
+                    case 1:
+                        bottomNavigationView.setSelectedItemId(R.id.navigation_weekly);
+                        break;
+                    case 2:
+                        bottomNavigationView.setSelectedItemId(R.id.navigation_monthly);
+                        break;
+                    default: {
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+//        downPager.setAdapter(new BottomNavAdapter(getSupportFragmentManager(),strings));
+        downPager.setAdapter(new OnlyStatisticBottomAdapter(getSupportFragmentManager(), strings));
         bottomNavigationView.setOnNavigationItemSelectedListener(x -> {
             int index = strings.indexOf(x.getTitle());
             downPager.setCurrentItem(index);
@@ -77,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             System.out.println("没有必要开启服务");
         }
-        //  APIUsageProvider.getInstance().loadDataApiDataToDB();
     }
 
 }

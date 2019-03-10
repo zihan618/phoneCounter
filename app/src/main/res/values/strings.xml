@@ -3,6 +3,9 @@
     <string name="test">test</string>
     <string name="unknownAppName">未知</string>
 
+    <string name="total">总计</string>
+    <string name="usageLabel">已使用%d分钟</string>
+
     <string name="others_name">"其他"</string>
     <integer name="timeThreshold">2</integer>
     <integer name="valueNumberThreshold">4</integer>

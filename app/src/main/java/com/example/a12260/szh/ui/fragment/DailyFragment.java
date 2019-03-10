@@ -97,14 +97,16 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
             @Override
             public void onValueSelected(int arcIndex, SliceValue value) {
                 pieChart.cancelDataAnimation();
-                pd.setCenterText1(appNames.get(arcIndex)).setCenterText2(Long.toString((long) (value.getValue())));
+                pd.setCenterText1(appNames.get(arcIndex)).setCenterText2(
+                        String.format(getString(R.string.usageLabel), (long) (value.getValue())));
                 pieChart.startDataAnimation(300);
             }
 
             @Override
             public void onValueDeselected() {
                 pieChart.cancelDataAnimation();
-                pd.setCenterText1("总计").setCenterText2(Long.toString(sum));
+                pd.setCenterText1(getString(R.string.total)).setCenterText2(
+                        String.format(getString(R.string.usageLabel), (sum)));
                 pieChart.startDataAnimation(300);
             }
         };
