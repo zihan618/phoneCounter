@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="gray">#E0E0E0</color>
     <!--<color name="colorPrimaryDark">#0288D1</color>-->
     <!--<color name="colorAccent">#FFC107</color>-->
     <!--<color name="colorPrimary">#03A9F4</color>-->
@@ -11,11 +12,11 @@
     <!--<color name="colorPrimary">#F44336</color>-->
     <!--<color name="textColorPrimary">#FFFFFF</color>-->
     <color name="blue400">#1E88E5</color>
-
-    <color name="colorPrimaryDark">#388E3C</color>
-    <color name="colorAccent">#7C4DFF</color>
-    <color name="colorPrimary">#4CAF50</color>
-    <color name="textColorPrimary">#212121</color>
+    <color name="white">#FFFFFF</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#FFC107</color>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="textColorPrimary">#757575</color>
 
     <!--<color name="indigo200">#9fa8da</color>-->
     <!--<color name="indigo300">#7986cb</color>-->
@@ -47,4 +48,20 @@
     <color name="c18">#a200e0</color>
     <color name="c19">#8b00dd</color>
     <color name="c20">#5c00d2</color>
+
+    <array name="colorArray">
+        <item>#ff1744</item>
+        <item>#ff5252</item>
+        <item>#ff8a80</item>
+        <item>#ffebee</item>
+        <item>#fff59d</item>
+        <item>#fff176</item>
+        <item>#ffee58</item>
+        <item>#ffeb3b</item>
+        <item>#fdd835</item>
+        <item>#fdd835</item>
+        <item>#ffff00</item>
+        <item>#ffea00</item>
+        <item>#ffd600</item>
+    </array>
 </resources>

@@ -94,6 +94,8 @@ public class WeeklyFragment extends Fragment {
     private void buildPieChartData(long timestamp) {
         //看书构建饼图
         List<WeekRecord> weekRecords = GreenDaoUtils.getInstance().listWeekRecordsInWeek(timestamp);
+        sum = weekRecords.stream().map(WeekRecord::getTimeSpent).reduce(0L, Long::sum);
+        sum = (long) Math.ceil(sum * 1.0 / 60000);
         weekRecords.sort((x, y) -> -Long.compare(x.getTimeSpent(), y.getTimeSpent()));
         packNames = new ArrayList<>(weekRecords.size());
         List<Long> minutes = new ArrayList<>(weekRecords.size());
@@ -107,14 +109,13 @@ public class WeeklyFragment extends Fragment {
             System.out.println("长度不一样，先停了");
         }
         map = GreenDaoUtils.getInstance().listDailyRecordsInWeek(timestamp);
-        sum = minutes.stream().reduce(0L, Long::sum);
         appNames = new ArrayList<>(packNames.size());
         days = CalendarUtils.getDaysPastInWeek(timestamp);
         List<Double> percents = minutes.stream().map(x -> x * 1.0 / sum).collect(Collectors.toList());
         Double percentThreshold = MyApplication.getContext().getResources().getInteger(R.integer.percentLabelThreshold) * 1.0 / 100;
         List<Integer> colors = PieChartColorProvider.getColors(weekRecords.size());
         for (int i = 0; i < packNames.size(); i++) {
-            SliceValue sliceValue = new SliceValue(minutes.get(i), getResources().getColor(colors.get(i), null));
+            SliceValue sliceValue = new SliceValue(minutes.get(i), colors.get(i));
             String appName = GreenDaoUtils.getInstance().getAppName(packNames.get(i));
             // 根据包名获取app的名称
             if (StringUtils.isNotBlank(appName)) {

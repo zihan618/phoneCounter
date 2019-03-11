@@ -7,8 +7,6 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.RotateAnimation;
-import android.view.animation.TranslateAnimation;
 
 import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.Entity.MonthRecord;
@@ -97,6 +95,8 @@ public class MonthlyFragment extends Fragment {
     private void buildPieChartData(long timestamp) {
         //看书构建饼图
         List<MonthRecord> monthRecords = GreenDaoUtils.getInstance().listMonthRecordsInMonth(timestamp);
+        sum = monthRecords.stream().map(MonthRecord::getTimeSpent).reduce(0L, Long::sum);
+        sum = (long) Math.ceil(sum * 1.0 / 60000);
         monthRecords.sort((x, y) -> -Long.compare(x.getTimeSpent(), y.getTimeSpent()));
         packNames = new ArrayList<>(monthRecords.size());
         List<Long> minutes = new ArrayList<>(monthRecords.size());
@@ -110,14 +110,13 @@ public class MonthlyFragment extends Fragment {
             System.out.println("长度不一样，先停了");
         }
         map = GreenDaoUtils.getInstance().listDailyRecordsInMonth(timestamp);
-        sum = minutes.stream().reduce(0L, Long::sum);
         appNames = new ArrayList<>(packNames.size());
         days = CalendarUtils.getDaysPastInMonth(timestamp);
         List<Double> percents = minutes.stream().map(x -> x * 1.0 / sum).collect(Collectors.toList());
         Double percentThreshold = MyApplication.getContext().getResources().getInteger(R.integer.percentLabelThreshold) * 1.0 / 100;
         List<Integer> colors = PieChartColorProvider.getColors(monthRecords.size());
         for (int i = 0; i < packNames.size(); i++) {
-            SliceValue sliceValue = new SliceValue(minutes.get(i), getResources().getColor(colors.get(i), null));
+            SliceValue sliceValue = new SliceValue(minutes.get(i), colors.get(i));
             String appName = GreenDaoUtils.getInstance().getAppName(packNames.get(i));
             // 根据包名获取app的名称
             if (StringUtils.isNotBlank(appName)) {

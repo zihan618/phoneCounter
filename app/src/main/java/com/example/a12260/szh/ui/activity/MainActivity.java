@@ -9,6 +9,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.logic.MyReceiver;
@@ -17,19 +20,28 @@ import com.example.a12260.szh.ui.OnlyStatisticBottomAdapter;
 import com.example.a12260.szh.utils.MyApplication;
 import com.example.a12260.szh.utils.ServiceUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 /**
  * @author 12260
  */
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+    MyReceiver myReceiver;
+    BottomNavigationView bottomNavigationView;
+    private DrawerLayout drawer;
     boolean hasAuth() {
         try {
             PackageManager packageManager = getPackageManager();
@@ -43,26 +55,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        MyApplication.fragmentManager = getSupportFragmentManager();
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ActionBar actionBar = getActionBar();
-        System.out.println("-------------------------");
-        if (actionBar != null) {
-            actionBar.hide();
-        }
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-//        List<String> strings = Arrays.asList(getString(R.string.statistics),
-//                getString(R.string.plan),
-//                getString(R.string.community));
+    void initBottomNavigation() {
         List<String> strings = Arrays.asList(getString(R.string.daily),
                 getString(R.string.weekly),
                 getString(R.string.monthly));
         ViewPager downPager = findViewById(R.id.viewpagerDown);
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom);
+        bottomNavigationView = findViewById(R.id.bottom);
+        //  bottomNavigationView.setBackgroundColor(getColor(R.color.gray));
         downPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -91,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
 //        downPager.setAdapter(new BottomNavAdapter(getSupportFragmentManager(),strings));
         downPager.setAdapter(new OnlyStatisticBottomAdapter(getSupportFragmentManager(), strings));
         bottomNavigationView.setOnNavigationItemSelectedListener(x -> {
@@ -99,12 +97,21 @@ public class MainActivity extends AppCompatActivity {
             downPager.setCurrentItem(index);
             return true;
         });
+    }
+
+    void requestPermission() {
         if (!hasAuth()) {
-            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            new AlertDialog.Builder(this).setTitle("权限").setMessage("为了应用可以正常计时，需要获取部分权限")
+                    .setNegativeButton("取消", (x, y) -> {
+                        Snackbar.make(bottomNavigationView, "未开启权限，无法进行统计", Snackbar.LENGTH_LONG)
+                                .setAction("去开启", z -> startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))).show();
+                    }).setPositiveButton("确定", (x, y) -> {
+                startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+            }).show();
         }
-        //android 8 以后的前台服务开启不一样
+    }
 
-
+    void startMyService() {
         if (!ServiceUtils.isServiceRunning(UsageCollectService.class)) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 startForegroundService(new Intent(this, UsageCollectService.class));
@@ -116,10 +123,82 @@ public class MainActivity extends AppCompatActivity {
         } else {
             System.out.println("没有必要开启服务");
         }
-        MyReceiver myReceiver = new MyReceiver();
+    }
+
+    void startMyReceiver() {
+        myReceiver = new MyReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
         registerReceiver(myReceiver, intentFilter);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        MyApplication.fragmentManager = getSupportFragmentManager();
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_drawer);
+        ActionBar actionBar = getActionBar();
+        System.out.println("-------------------------");
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);
+
+        View headerView = navigationView.getHeaderView(0);
+        LinearLayout nav_header = headerView.findViewById(R.id.nav_header);
+        nav_header.setOnClickListener(this);
+//        List<String> strings = Arrays.asList(getString(R.string.statistics),
+//                getString(R.string.plan),
+//                getString(R.string.community));
+        initBottomNavigation();
+        requestPermission();
+        startMyService();
+        startMyReceiver();
+        //android 8 以后的前台服务开启不一样
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(myReceiver);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.nav_header:
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
 }
