@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.os.PowerManager;
 
+import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.ui.activity.MainActivity;
 import com.example.a12260.szh.utils.GreenDaoUtils;
@@ -32,56 +33,66 @@ public class UsageCollectService extends Service {
     boolean isStop = false;
     UsageStatsManager usageService;
     PowerManager powerManager;
+    NotificationManager manager;
+    PendingIntent pendingIntent;
     long lastTimestamp = 0;
 
-    String channelID = UsageCollectService.class.getName();
-    String channelName = channelID + "Name";
+    String channelID, channelName, reminder, reminder2;
+    int notificationID;
+    long totalToday;
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     */
-//    public UsageCollectService() {
-//        super("szhh");
-//    }
+    private void init() {
+        usageService = (UsageStatsManager) getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
+        powerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+        manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        channelID = getString(R.string.channelID);
+        channelName = getString(R.string.channelName);
+        notificationID = getResources().getInteger(R.integer.notificationID);
+        reminder = getString(R.string.notificationReminder);
+        reminder2 = getString(R.string.notificationReminder2);
+        Intent intent1 = new Intent(this, MainActivity.class);
+        pendingIntent = PendingIntent.getActivity(this, 0, intent1, 0);
+        totalToday = GreenDaoUtils.getInstance().listDailyRecordsInDate(System.currentTimeMillis()).stream().map(DailyRecord::getTimeSpent).reduce(0L, Long::sum);
+    }
     @Override
     public void onCreate() {
         super.onCreate();
-        usageService = (UsageStatsManager) getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
-        powerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
-
-
+        init();
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Runnable runnable = this::startRecord;
         new Thread(runnable).start();
+        int minute = (int) Math.ceil(totalToday * 1.0 / 60000);
+        String title;
+        if (minute < 60) {
+            title = String.format(reminder, minute);
+        } else {
+            title = String.format(reminder2, minute / 60, minute % 60);
+        }
 
-        Intent intent1 = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent1, 0);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_LOW);
-            NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
             manager.createNotificationChannel(channel);
             Notification notification = new NotificationCompat.Builder(this, channelID)
-                    .setContentTitle("这才是szh")
+                    .setContentTitle(title)
                     .setWhen(System.currentTimeMillis())
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentIntent(pendingIntent)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                     .build();
 
-            startForeground(2333, notification);
+            startForeground(notificationID, notification);
         } else {
             NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification notification = new NotificationCompat.Builder(this.getApplicationContext())
-                    .setContentTitle("这才是title")
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setContentTitle(String.format(reminder, 1))
                     .setWhen(System.currentTimeMillis())
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentIntent(pendingIntent)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                    .setContentIntent(pendingIntent).build();
-            manager.notify(2333, notification);
+                    .build();
+            manager.notify(notificationID, notification);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -122,20 +133,26 @@ public class UsageCollectService extends Service {
         super.onDestroy();
     }
 
+
     protected void startRecord() {
         long time;
         long interval;
+        int minute;
         while (!isStop) {
             if (isScreenOn()) {
                 time = System.currentTimeMillis();
                 interval = lastTimestamp == 0 ? 5000 : time - lastTimestamp;
                 lastTimestamp = time;
+                //  totalToday += interval;
+                //save state
                 String foregroundPack = getForegroundPackage();
                 if (StringUtils.isNotBlank(foregroundPack)) {
                     GreenDaoUtils.getInstance().updateDailyRecord(foregroundPack, interval);
                 } else {
                     System.out.println("无法获取前台app包名");
                 }
+                //update notification
+
             }
             try {
                 Thread.sleep(5000);

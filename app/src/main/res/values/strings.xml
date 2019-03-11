@@ -51,4 +51,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="channelID">phoneCounter</string>
+    <string name="channelName">phoneCounterName</string>
+    <integer name="notificationID">20190308</integer>
+    <string name="notificationReminder">今日已使用%d分钟</string>
+    <string name="notificationReminder2">今日已使用%d小时%d分钟</string>
 </resources>
