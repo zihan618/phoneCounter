@@ -18,37 +18,11 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="textColorPrimary">#757575</color>
 
-    <!--<color name="indigo200">#9fa8da</color>-->
-    <!--<color name="indigo300">#7986cb</color>-->
-    <!--<color name="indigo400">#5c6bc0</color>-->
-    <!--<color name="indigo500">#3f51b5</color>-->
-    <!--<color name="indigo600">#3949ab</color>-->
-    <!--<color name="indigo700">#303f9f</color>-->
-    <!--<color name="indigo800">#283593</color>-->
-    <!--<color name="indigo900">#1a237e</color>-->
 
     <color name="c1">#0000e4</color>
-    <color name="c2">#0013e9</color>
-    <color name="c3">#021aee</color>
-    <color name="c4">#3722f6</color>
-    <color name="c5">#4a26fd</color>
-    <color name="c6">#714cfe</color>
     <color name="c7">#916eff</color>
-    <color name="c8">#b39afd</color>
-    <color name="c9">#d2c2fd</color>
-    <color name="c10">#eee6ff</color>
 
-    <color name="c11">#fae4fc</color>
-    <color name="c12">#f2bcf8</color>
-    <color name="c13">#e98df5</color>
-    <color name="c14">#df55f2</color>
-    <color name="c15">#d602ee</color>
-    <color name="c16">#cd00ea</color>
-    <color name="c17">#ba00e5</color>
-    <color name="c18">#a200e0</color>
-    <color name="c19">#8b00dd</color>
-    <color name="c20">#5c00d2</color>
-
+    <color name="blue_white">#E3F2FD</color>
     <array name="colorArray">
         <item>#ff1744</item>
         <item>#ff5252</item>

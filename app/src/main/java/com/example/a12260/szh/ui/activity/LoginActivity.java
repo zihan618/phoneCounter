@@ -3,6 +3,8 @@ package com.example.a12260.szh.ui.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.a12260.szh.R;
+import com.example.a12260.szh.utils.Server;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -308,21 +311,30 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                Integer id = Server.login(mEmail, mPassword);
+                System.out.println("登录完毕，" + id);
+                if (id == null) {
+                    return false;
+                } else {
+                    SharedPreferences sp = getSharedPreferences("login", Context.MODE_PRIVATE);
+                    sp.edit().putInt("userId", id).apply();
+                    return true;
+                }
+                //Thread.sleep(2000);
+            } catch (Exception e) {
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
+//            for (String credential : DUMMY_CREDENTIALS) {
+//                String[] pieces = credential.split(":");
+//                if (pieces[0].equals(mEmail)) {
+//                    // Account exists, return true if the password matches.
+//                    return pieces[1].equals(mPassword);
+//                }
+//            }
 
             // TODO: register the new account here.
-            return true;
+            // return true;
         }
 
         @Override

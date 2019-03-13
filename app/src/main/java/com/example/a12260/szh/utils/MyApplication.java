@@ -17,16 +17,22 @@ import com.example.a12260.szh.R;
 
 import androidx.fragment.app.FragmentManager;
 
+/**
+ * @author 12260
+ */
 public class MyApplication extends Application {
     private static Context context;
 
     public static FragmentManager fragmentManager;
 
+
+    @Override
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
 
     }
+
     public static Context getContext() {
         return context;
     }
