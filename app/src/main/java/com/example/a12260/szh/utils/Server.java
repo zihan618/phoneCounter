@@ -1,6 +1,7 @@
 package com.example.a12260.szh.utils;
 
 import com.example.a12260.szh.Entity.DailyRecord;
+import com.example.a12260.szh.Entity.DailyRecordConvert;
 import com.example.a12260.szh.Entity.PackageApp;
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.model.WebResult;
@@ -32,8 +33,8 @@ public class Server {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().get().url(url + "record?userId=" + userId).build();
         try {
-            DailyRecord[] dailyRecords = gson.fromJson(client.newCall(request).execute().body().string(), DailyRecord[].class);
-            return Arrays.stream(dailyRecords).collect(Collectors.toList());
+            DailyRecordConvert[] dailyRecords = gson.fromJson(client.newCall(request).execute().body().string(), DailyRecordConvert[].class);
+            return Arrays.stream(dailyRecords).map(DailyRecordConvert::toDaiyRecord).collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
             return new ArrayList<>();

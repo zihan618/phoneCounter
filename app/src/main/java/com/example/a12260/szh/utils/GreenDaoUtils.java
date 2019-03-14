@@ -12,15 +12,19 @@ import com.example.a12260.szh.Entity.PackageApp;
 import com.example.a12260.szh.Entity.PackageAppDao;
 import com.example.a12260.szh.Entity.WeekRecord;
 import com.example.a12260.szh.Entity.WeekRecordDao;
+import com.example.a12260.szh.R;
 
+import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class GreenDaoUtils {
@@ -40,13 +44,19 @@ public class GreenDaoUtils {
     private DailyRecord latestDailyRecord = null;
 
     public String getAppName(String packageName) {
-        PackageApp packageApp = packageAppDao.queryBuilder().where(PackageAppDao.Properties.PackageName.eq(packageName)).unique();
-        if (packageApp == null) {
+        List<PackageApp> packageApps = packageAppDao.queryBuilder().where(PackageAppDao.Properties.PackageName.eq(packageName)).list();
+        if (packageApps.isEmpty()) {
             String appName = MyApplication.getAppName(packageName);
-            packageApp = new PackageApp(packageName, appName);
+            PackageApp packageApp = new PackageApp();
+            packageApp.setAppName(appName);
+            packageApp.setPackageName(packageName);
             packageAppDao.save(packageApp);
+
+            System.out.println(packageApp);
+            System.out.println(packageAppDao.loadAll());
+            return packageApp.getAppName();
         }
-        return packageApp.getAppName();
+        return packageApps.get(0).getAppName();
     }
     private List<DailyRecord> selectDailyRecord(long timestamp, String packageName) {
         QueryBuilder<DailyRecord> queryBuilder = dailyRecordDao.queryBuilder();
@@ -133,52 +143,43 @@ public class GreenDaoUtils {
     }
 
     public void updateDailyRecord(String packageName, long time) {
-        //   System.out.println(packageName + "_____" + time);
         long now = System.currentTimeMillis();
         //和上一次是同一个应用 直接更新即可
         if (packageName.equals(latestPackageName)) {
-            //system.out.println("和上次一样的包名");
             if (latestDailyRecord.getId() == null) {
                 List<DailyRecord> list = selectDailyRecord(CalendarUtils.getFirstTimestampOfDay(now), packageName);
                 if (list.isEmpty()) {
-                    //system.out.println("怎么还是空的");
+
                 } else {
                     latestDailyRecord = list.get(0);
                 }
             }
-            //      System.out.println("之前的时间是:" + latestDailyRecord.getTimeSpent());
             latestDailyRecord.setTimeSpent(latestDailyRecord.getTimeSpent() + time);
-            //      System.out.println("现在的时间是：" + (latestDailyRecord.getTimeSpent() + time));
 
             latestDailyRecord.update();
         } //应用切换了  要更新一下这两个变量
         else {
-            //system.out.println("应用发生了切换");
             latestPackageName = packageName;
             Long timestamp = CalendarUtils.getFirstTimestampOfDay(now);
             List<DailyRecord> dailyRecords = selectDailyRecord(CalendarUtils.getFirstTimestampOfDay(now), packageName);
             //需要新建结构体
             if (dailyRecords.isEmpty()) {
-                //system.out.println("需要新建");
                 latestDailyRecord = new DailyRecord();
                 latestDailyRecord.setPackageName(packageName);
                 latestDailyRecord.setTimeSpent(time);
                 latestDailyRecord.setTimestamp(timestamp);
                 dailyRecordDao.save(latestDailyRecord);
-//                if (dailyRecords.isEmpty()) {
-//                    //system.out.println("还是空的，实现逻辑有问题");
-//                } else {
-//                    latestDailyRecord = dailyRecords.get(0);
-//                }
             } //不需要新建
             else {
-                //system.out.println("不需要新建");
                 latestDailyRecord = dailyRecords.get(0);
                 latestDailyRecord.setTimeSpent(latestDailyRecord.getTimeSpent() + time);
-                //system.out.println( "更新之后的是" + latestDailyRecord);
                 latestDailyRecord.refresh();
             }
         }
+    }
+
+    public List<DailyRecord> listAllDailyRecords() {
+        return dailyRecordDao.loadAll();
     }
 
     public List<WeekRecord> listWeekRecordsInWeek(long timestamp) {
@@ -232,7 +233,7 @@ public class GreenDaoUtils {
     }
 
     private GreenDaoUtils() {
-        String dbName = "usage6.db";
+        String dbName = MyApplication.getContext().getString(R.string.DBName);
         mHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), dbName, null);
         db = mHelper.getWritableDatabase();
         // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
@@ -244,6 +245,44 @@ public class GreenDaoUtils {
         packageAppDao = mDaoSession.getPackageAppDao();
     }
 
+    public List<PackageApp> listAllPackageApp() {
+        return packageAppDao.loadAll();
+    }
+
+    public void refreshDB(List<DailyRecord> dailyRecords, List<PackageApp> packageApps) {
+        List<DailyRecord> todayData = this.listDailyRecordsInDate(CalendarUtils.getFirstTimestampOfDay());
+        dailyRecordDao.deleteAll();
+        packageAppDao.deleteAll();
+        dailyRecords.addAll(todayData);
+        dailyRecordDao.saveInTx(dailyRecords);
+        packageAppDao.saveInTx(packageApps);
+
+//        System.out.println("-----");
+//        System.out.println(dailyRecordDao.loadAll().size());
+//        System.out.println(packageAppDao.loadAll().size());
+//        System.out.println("=====");
+    }
+
+    public void generateDummyData(long start, long end) {
+        List<PackageApp> packageApps = packageAppDao.loadAll();
+        long t;
+        Random random = new Random();
+        t = CalendarUtils.getFirstTimestampOfDay(start);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(t);
+        while (calendar.getTimeInMillis() < end) {
+            Collections.shuffle(packageApps);
+            List<PackageApp> tmp = packageApps.subList(0, packageApps.size() / 2);
+            for (PackageApp packageApp : tmp) {
+                DailyRecord dailyRecord = new DailyRecord();
+                dailyRecord.setTimestamp(calendar.getTimeInMillis());
+                dailyRecord.setPackageName(packageApp.getPackageName());
+                dailyRecord.setTimeSpent((long) ((random.nextInt(80) + 10) * 60000));
+                dailyRecordDao.save(dailyRecord);
+            }
+            calendar.add(Calendar.DATE, 1);
+        }
+    }
 
 
 }

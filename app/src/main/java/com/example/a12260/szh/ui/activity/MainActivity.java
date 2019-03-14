@@ -17,11 +17,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.a12260.szh.Entity.DailyRecord;
+import com.example.a12260.szh.Entity.PackageApp;
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.logic.MyReceiver;
 import com.example.a12260.szh.logic.UsageCollectService;
 import com.example.a12260.szh.ui.OnlyStatisticBottomAdapter;
+import com.example.a12260.szh.utils.CalendarUtils;
+import com.example.a12260.szh.utils.GreenDaoUtils;
+import com.example.a12260.szh.utils.LoginManager;
 import com.example.a12260.szh.utils.MyApplication;
+import com.example.a12260.szh.utils.Server;
 import com.example.a12260.szh.utils.ServiceUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -29,6 +35,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -138,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        MyApplication.fragmentManager = getSupportFragmentManager();
+        //  GreenDaoUtils.getInstance().generateDummyData(CalendarUtils.getIntervalOfMonth().getStart(), CalendarUtils.getFirstTimestampOfDay());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         ActionBar actionBar = getActionBar();
@@ -181,9 +188,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         requestPermission();
         startMyService();
         startMyReceiver();
-        //android 8 以后的前台服务开启不一样
-
-
     }
 
     @Override
@@ -196,11 +200,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.nav_header:
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                drawer.closeDrawer(GravityCompat.START);
+                if (!LoginManager.isLogin()) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    drawer.closeDrawer(GravityCompat.START);
+                }
                 break;
-
+            default: {
+            }
         }
     }
 
@@ -215,6 +222,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.paceWithServer:
+                if (LoginManager.isLogin()) {
+                    long today = CalendarUtils.getFirstTimestampOfDay();
+                    List<DailyRecord> dailyRecords = GreenDaoUtils.getInstance().listAllDailyRecords().stream().filter(x -> !x.getTimestamp().equals(today)).collect(Collectors.toList());
+                    List<PackageApp> packageApps = GreenDaoUtils.getInstance().listAllPackageApp();
+                    new Thread(() -> {
+                        try {
+                            long id = (long) LoginManager.getId();
+                            Server.pushRecord(dailyRecords, id);
+                            Server.pushKV(packageApps, id);
+                            List<PackageApp> packageApps2 = Server.getKV(id);
+                            List<DailyRecord> dailyRecords2 = Server.getRecords(id);
+                            GreenDaoUtils.getInstance().refreshDB(dailyRecords2, packageApps2);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
+                }
+                break;
+            default: {
+            }
+        }
         return false;
     }
 }

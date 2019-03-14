@@ -49,6 +49,8 @@
     <string name="unauthorizedMessage">获取权限失败</string>
     <string name="resetAuth">重新设置</string>
 
+    <string name="refresh">同步</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -95,5 +97,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="server_address">http://192.168.1.42:8080/server/</string>
+    <string name="server_address">http://192.168.1.42:8083/server/</string>
+    <string name="DBName">usageDataBD</string>
 </resources>

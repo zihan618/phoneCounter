@@ -11,12 +11,23 @@ import org.greenrobot.greendao.annotation.Generated;
  */
 @Entity
 public class PackageApp {
-    @Id
+    @Id(autoincrement = true)
+    private Long id;
+
     private String packageName;
     private String appName;
 
-    @Generated(hash = 1177092060)
-    public PackageApp(String packageName, String appName) {
+    @Override
+    public String toString() {
+        return "PackageApp{" +
+                "packageName='" + packageName + '\'' +
+                ", appName='" + appName + '\'' +
+                '}';
+    }
+
+    @Generated(hash = 881876647)
+    public PackageApp(Long id, String packageName, String appName) {
+        this.id = id;
         this.packageName = packageName;
         this.appName = appName;
     }
@@ -39,6 +50,14 @@ public class PackageApp {
 
     public void setAppName(String appName) {
         this.appName = appName;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }
