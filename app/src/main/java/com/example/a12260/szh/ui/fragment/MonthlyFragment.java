@@ -14,7 +14,7 @@ import com.example.a12260.szh.R;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
-import com.example.a12260.szh.utils.PieChartColorProvider;
+import com.example.a12260.szh.utils.PieChartUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -114,7 +114,7 @@ public class MonthlyFragment extends Fragment {
         days = CalendarUtils.getDaysPastInMonth(timestamp);
         List<Double> percents = minutes.stream().map(x -> x * 1.0 / sum).collect(Collectors.toList());
         Double percentThreshold = MyApplication.getContext().getResources().getInteger(R.integer.percentLabelThreshold) * 1.0 / 100;
-        List<Integer> colors = PieChartColorProvider.getColors(monthRecords.size());
+        List<Integer> colors = PieChartUtils.getColors(monthRecords.size());
         for (int i = 0; i < packNames.size(); i++) {
             SliceValue sliceValue = new SliceValue(minutes.get(i), colors.get(i));
             String appName = GreenDaoUtils.getInstance().getAppName(packNames.get(i));
@@ -212,8 +212,8 @@ public class MonthlyFragment extends Fragment {
         @Override
         public void onValueSelected(int arcIndex, SliceValue value) {
             pieChart.cancelDataAnimation();
-            pieChartData.setCenterText1(appNames.get(arcIndex)).setCenterText2(
-                    String.format(getString(R.string.usageLabel), (long) (value.getValue())));
+
+            pieChartData.setCenterText1(appNames.get(arcIndex)).setCenterText2(PieChartUtils.buildCenterText2((int) value.getValue()));
             pieChart.startDataAnimation(300);
             Message message = new Message();
             message.obj = packNames.get(arcIndex);
@@ -223,8 +223,7 @@ public class MonthlyFragment extends Fragment {
         @Override
         public void onValueDeselected() {
             pieChart.cancelDataAnimation();
-            pieChartData.setCenterText1(getString(R.string.total)).setCenterText2(
-                    String.format(getString(R.string.usageLabel), (sum)));
+            pieChartData.setCenterText1(getString(R.string.total)).setCenterText2(PieChartUtils.buildCenterText2((int) sum));
             pieChart.startDataAnimation(300);
             lineChart.cancelDataAnimation();
             buildLineChartData(sumLineData);

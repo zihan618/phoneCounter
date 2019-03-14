@@ -14,15 +14,13 @@
     <ImageView
         android:id="@+id/imageView_nav_header"
         android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/unlogin" />
+        android:layout_height="64dp" />
 
     <TextView
         android:id="@+id/text_nav_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/nav_header_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/blue_white" />
 </LinearLayout>

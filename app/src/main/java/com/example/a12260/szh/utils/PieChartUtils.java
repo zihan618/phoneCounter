@@ -7,7 +7,7 @@ import com.example.a12260.szh.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PieChartColorProvider {
+public class PieChartUtils {
     static int[] colors;
 
     static {
@@ -32,5 +32,11 @@ public class PieChartColorProvider {
             }
         }
         return res;
+    }
+
+    public static String buildCenterText2(int minute) {
+        return minute < 59 ?
+                String.format(MyApplication.getContext().getString(R.string.WeekMonthReminder), minute)
+                : String.format(MyApplication.getContext().getString(R.string.WeekMonthReminder2), minute / 60, minute % 60);
     }
 }

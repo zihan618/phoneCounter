@@ -10,7 +10,7 @@ import com.example.a12260.szh.R;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
-import com.example.a12260.szh.utils.PieChartColorProvider;
+import com.example.a12260.szh.utils.PieChartUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
@@ -31,7 +31,6 @@ import androidx.fragment.app.Fragment;
 import lecho.lib.hellocharts.listener.PieChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
-import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.PieChartView;
 
 /**
@@ -99,14 +98,14 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
             @Override
             public void onValueSelected(int arcIndex, SliceValue value) {
                 pieChart.cancelDataAnimation();
-                pd.setCenterText1(appNames.get(arcIndex)).setCenterText2(
-                        String.format(getString(R.string.usageLabel), (long) (value.getValue())));
+                pd.setCenterText1(appNames.get(arcIndex)).setCenterText2(String.format(getString(R.string.usageLabel), (int) value.getValue()));
                 pieChart.startDataAnimation(300);
             }
 
             @Override
             public void onValueDeselected() {
                 pieChart.cancelDataAnimation();
+//                pd.setCenterText1(appNames.get(arcIndex)).setCenterText2(text);
                 pd.setCenterText1(getString(R.string.total)).setCenterText2(
                         String.format(getString(R.string.usageLabel), (sum)));
                 pieChart.startDataAnimation(300);
@@ -148,7 +147,7 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
 
         List<Double> percents = minutes.stream().map(x -> x * 1.0 / sum).collect(Collectors.toList());
         Double percentThreshold = MyApplication.getContext().getResources().getInteger(R.integer.percentLabelThreshold) * 1.0 / 100;
-        List<Integer> colors = PieChartColorProvider.getColors(dailyRecords.size());
+        List<Integer> colors = PieChartUtils.getColors(dailyRecords.size());
         for (int i = 0; i < packNames.size(); i++) {
             SliceValue sliceValue = new SliceValue(minutes.get(i), colors.get(i));
             String appName = GreenDaoUtils.getInstance().getAppName(packNames.get(i));

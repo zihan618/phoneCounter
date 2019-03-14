@@ -296,7 +296,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * the user.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
         private final String mEmail;
         private final String mPassword;
 
@@ -316,8 +315,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 if (id == null) {
                     return false;
                 } else {
-                    SharedPreferences sp = getSharedPreferences("login", Context.MODE_PRIVATE);
-                    sp.edit().putInt("userId", id).apply();
+                    SharedPreferences sp = getSharedPreferences(getString(R.string.loginReference), Context.MODE_PRIVATE);
+                    sp.edit().putInt("userId", id)
+                            .putString("name", mEmail)
+                            .putString("password", mPassword).apply();
                     return true;
                 }
                 //Thread.sleep(2000);

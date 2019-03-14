@@ -57,7 +57,10 @@
     <integer name="notificationID">20190308</integer>
     <string name="notificationReminder">今日已使用%d分钟</string>
     <string name="notificationReminder2">今日已使用%d小时%d分钟</string>
+    <string name="WeekMonthReminder">已使用%dmin</string>
+    <string name="WeekMonthReminder2">已使用%dh %dmin</string>
 
+    <string name="loginReference">login</string>
     <!--<string name="register">注册</string>-->
     <!--<string name="forgot_password">忘记密码？</string>-->
     <!--<string name="action_sign_in">登录</string>-->

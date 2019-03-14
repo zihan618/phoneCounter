@@ -5,13 +5,17 @@ import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.logic.MyReceiver;
@@ -157,6 +161,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         View headerView = navigationView.getHeaderView(0);
         LinearLayout nav_header = headerView.findViewById(R.id.nav_header);
+        ImageView login = nav_header.findViewById(R.id.imageView_nav_header);
+        TextView textView = nav_header.findViewById(R.id.text_nav_header);
+        SharedPreferences sp = getSharedPreferences(getString(R.string.loginReference), Context.MODE_PRIVATE);
+        int id = sp.getInt("userId", 0);
+        String name = sp.getString("name", "");
+        if (id == 0) {
+            textView.setText(R.string.nav_header_text);
+            login.setImageDrawable(getDrawable(R.drawable.unlogin));
+        } else {
+            textView.setText(name);
+            login.setImageDrawable(getDrawable(R.drawable.longin));
+        }
         nav_header.setOnClickListener(this);
 //        List<String> strings = Arrays.asList(getString(R.string.statistics),
 //                getString(R.string.plan),
