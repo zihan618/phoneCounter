@@ -5,9 +5,15 @@
         <item
             android:id="@+id/paceWithServer"
             android:icon="@drawable/refresh"
+            android:tooltipText="rtreter"
             android:title="@string/refresh" />
+        <item
+            android:id="@+id/filterRule"
+            android:icon="@drawable/filter"
+            android:title="@string/filterRule" />
+
         <!--<item-->
-        <!--android:id="@+id/nav_scrolling"-->
+        <!--android:id="@+id/dummyData"-->
         <!--android:icon="@drawable/ic_file_download_black_24dp"-->
         <!--android:title="@string/nav_scrolling" />-->
         <!--<item-->

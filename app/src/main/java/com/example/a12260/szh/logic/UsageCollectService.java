@@ -17,6 +17,7 @@ import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.ui.activity.MainActivity;
 import com.example.a12260.szh.utils.GreenDaoUtils;
+import com.example.a12260.szh.utils.MyApplication;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -103,6 +104,7 @@ public class UsageCollectService extends Service {
         return null;
     }
 
+
     private String getForegroundPackage() {
         long time = System.currentTimeMillis();
         List<UsageStats> appList = usageService.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,
@@ -146,13 +148,9 @@ public class UsageCollectService extends Service {
                 //  totalToday += interval;
                 //save state
                 String foregroundPack = getForegroundPackage();
-                if (StringUtils.isNotBlank(foregroundPack)) {
+                if (StringUtils.isNotBlank(foregroundPack) && !MyApplication.isSystemApplication(foregroundPack)) {
                     GreenDaoUtils.getInstance().updateDailyRecord(foregroundPack, interval);
-                } else {
-                    System.out.println("无法获取前台app包名");
                 }
-                //update notification
-
             }
             try {
                 Thread.sleep(5000);

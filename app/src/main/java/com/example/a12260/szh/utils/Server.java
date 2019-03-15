@@ -8,7 +8,6 @@ import com.example.a12260.szh.model.WebResult;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,74 +28,49 @@ public class Server {
     static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     static Gson gson = new Gson();
 
-    public static List<DailyRecord> getRecords(Long userId) {
+    public static List<DailyRecord> getRecords(Long userId) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().get().url(url + "record?userId=" + userId).build();
-        try {
             DailyRecordConvert[] dailyRecords = gson.fromJson(client.newCall(request).execute().body().string(), DailyRecordConvert[].class);
             return Arrays.stream(dailyRecords).map(DailyRecordConvert::toDaiyRecord).collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
     }
 
-    public static boolean pushRecord(List<DailyRecord> records, Long userId) {
+    public static boolean pushRecord(List<DailyRecord> records, Long userId) throws IOException {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, gson.toJson(records));
         Request request = new Request.Builder().post(body).url(url + "record?userId=" + userId).build();
-        try {
             client.newCall(request).execute();
             return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
-    public static Integer login(String name, String psw) {
+    public static Integer login(String name, String psw) throws IOException {
         Map<String, String> map = new HashMap<>(2);
         map.put("name", name);
         map.put("password", psw);
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, gson.toJson(map));
         Request request = new Request.Builder().post(body).url(url + "login").build();
-        try {
             Response response = client.newCall(request).execute();
             WebResult res = gson.fromJson(response.body().string(), WebResult.class);
             System.out.println("结果是这样的" + res.getSuccess() + res.getData());
             if (res.getSuccess()) {
                 return (Double.valueOf(res.getData().toString()).intValue());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
         return null;
     }
 
-    public static List<PackageApp> getKV(Long userId) {
+    public static List<PackageApp> getKV(Long userId) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().get().url(url + "KV?userId=" + userId).build();
-        try {
             PackageApp[] dailyRecords = gson.fromJson(client.newCall(request).execute().body().string(), PackageApp[].class);
             return Arrays.stream(dailyRecords).collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
     }
 
-    public static boolean pushKV(List<PackageApp> packageApps, Long userId) {
+    public static boolean pushKV(List<PackageApp> packageApps, Long userId) throws IOException {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, gson.toJson(packageApps));
         Request request = new Request.Builder().post(body).url(url + "KV?userId=" + userId).build();
-        try {
             client.newCall(request).execute();
             return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 }

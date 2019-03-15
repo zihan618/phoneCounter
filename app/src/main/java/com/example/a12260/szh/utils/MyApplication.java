@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import com.example.a12260.szh.Entity.DailyRecordDao;
@@ -15,6 +16,8 @@ import com.example.a12260.szh.Entity.MonthRecordDao;
 import com.example.a12260.szh.Entity.WeekRecordDao;
 import com.example.a12260.szh.R;
 
+import org.apache.commons.lang3.StringUtils;
+
 import androidx.fragment.app.FragmentManager;
 
 /**
@@ -22,8 +25,6 @@ import androidx.fragment.app.FragmentManager;
  */
 public class MyApplication extends Application {
     private static Context context;
-
-    public static FragmentManager fragmentManager;
 
 
     @Override
@@ -53,8 +54,30 @@ public class MyApplication extends Application {
             AppPackageNameMapper.getInstance().register(packageName, result);
             return result;
         } catch (PackageManager.NameNotFoundException e) {
-            // e.printStackTrace();
             return context.getString(R.string.unknownAppName);
         }
     }
+
+    public static Drawable getAppIcon(String pack) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(pack, 0);
+            return packageInfo.applicationInfo.loadIcon(packageManager);
+        } catch (PackageManager.NameNotFoundException e) {
+            return context.getDrawable(R.mipmap.ic_launcher);
+        }
+    }
+
+    public static boolean isSystemApplication(String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            PackageInfo x = packageManager.getPackageInfo(packageName, 0);
+            return (x.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) > 0;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return true;
+        }
+        // if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0)
+    }
+
 }

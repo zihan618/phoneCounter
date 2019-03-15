@@ -20,6 +20,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,10 +214,6 @@ public class GreenDaoUtils {
         });
     }
 
-    void insertPackAppName(String packageName, String appName) {
-
-    }
-
     private void doMonthlySummary(long timestamp) {
         CalendarUtils.Interval interval = CalendarUtils.getIntervalOfMonth(timestamp);
         QueryBuilder<DailyRecord> queryBuilder = dailyRecordDao.queryBuilder();
@@ -236,7 +233,7 @@ public class GreenDaoUtils {
         String dbName = MyApplication.getContext().getString(R.string.DBName);
         mHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), dbName, null);
         db = mHelper.getWritableDatabase();
-        // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
+        // mHelper.onUpgrade(db, 0, 0);
         mDaoMaster = new DaoMaster(db);
         mDaoSession = mDaoMaster.newSession();
         dailyRecordDao = mDaoSession.getDailyRecordDao();
@@ -249,18 +246,36 @@ public class GreenDaoUtils {
         return packageAppDao.loadAll();
     }
 
+    public void refreshWeekMonthRecord(long start, long end) {
+        weekRecordDao.deleteAll();
+        monthRecordDao.deleteAll();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(start);
+        while (calendar.getTimeInMillis() < end) {
+            System.out.println("今天是" + new Date(calendar.getTimeInMillis()));
+            doWeeklySummary(calendar.getTimeInMillis());
+            calendar.add(Calendar.DATE, 7);
+        }
+        calendar.setTimeInMillis(start);
+        while (calendar.getTimeInMillis() < end) {
+            System.out.println("今天是" + new Date(calendar.getTimeInMillis()));
+            doMonthlySummary(calendar.getTimeInMillis());
+            calendar.add(Calendar.MONTH, 1);
+        }
+    }
+
     public void refreshDB(List<DailyRecord> dailyRecords, List<PackageApp> packageApps) {
+        System.out.println("他们的 doumeiyou ");
         List<DailyRecord> todayData = this.listDailyRecordsInDate(CalendarUtils.getFirstTimestampOfDay());
         dailyRecordDao.deleteAll();
         packageAppDao.deleteAll();
         dailyRecords.addAll(todayData);
+        dailyRecords.forEach(x -> x.setId(null));
+        System.out.println("要写入的数据有:" + dailyRecords.size());
         dailyRecordDao.saveInTx(dailyRecords);
+        System.out.println("写入的数据有:" + dailyRecordDao.loadAll().size());
         packageAppDao.saveInTx(packageApps);
-
-//        System.out.println("-----");
-//        System.out.println(dailyRecordDao.loadAll().size());
-//        System.out.println(packageAppDao.loadAll().size());
-//        System.out.println("=====");
+        refreshWeekMonthRecord(dailyRecords.stream().map(DailyRecord::getTimestamp).distinct().min(Long::compareTo).get(), System.currentTimeMillis());
     }
 
     public void generateDummyData(long start, long end) {
@@ -272,7 +287,7 @@ public class GreenDaoUtils {
         calendar.setTimeInMillis(t);
         while (calendar.getTimeInMillis() < end) {
             Collections.shuffle(packageApps);
-            List<PackageApp> tmp = packageApps.subList(0, packageApps.size() / 2);
+            List<PackageApp> tmp = packageApps.subList(0, packageApps.size() * 2 / 3);
             for (PackageApp packageApp : tmp) {
                 DailyRecord dailyRecord = new DailyRecord();
                 dailyRecord.setTimestamp(calendar.getTimeInMillis());

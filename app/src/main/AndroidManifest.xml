@@ -24,6 +24,8 @@
             android:name=".ui.activity.LoginActivity"
             android:label="@string/title_activity_login" />
 
+        <activity android:name=".ui.activity.FilterRuleSetActivity" />
+
         <service
             android:name=".logic.UsageCollectService"
             android:exported="false" />

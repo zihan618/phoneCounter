@@ -9,10 +9,11 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,8 +26,7 @@ import com.example.a12260.szh.logic.UsageCollectService;
 import com.example.a12260.szh.ui.OnlyStatisticBottomAdapter;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
-import com.example.a12260.szh.utils.LoginManager;
-import com.example.a12260.szh.utils.MyApplication;
+import com.example.a12260.szh.utils.SharedPreferManager;
 import com.example.a12260.szh.utils.Server;
 import com.example.a12260.szh.utils.ServiceUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         ActionBar actionBar = getActionBar();
-        System.out.println("-------------------------");
         if (actionBar != null) {
             actionBar.hide();
         }
@@ -181,9 +180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             login.setImageDrawable(getDrawable(R.drawable.longin));
         }
         nav_header.setOnClickListener(this);
-//        List<String> strings = Arrays.asList(getString(R.string.statistics),
-//                getString(R.string.plan),
-//                getString(R.string.community));
         initBottomNavigation();
         requestPermission();
         startMyService();
@@ -200,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.nav_header:
-                if (!LoginManager.isLogin()) {
+                if (!SharedPreferManager.isLogin()) {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
                     drawer.closeDrawer(GravityCompat.START);
@@ -224,23 +220,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.paceWithServer:
-                if (LoginManager.isLogin()) {
+                if (SharedPreferManager.isLogin()) {
                     long today = CalendarUtils.getFirstTimestampOfDay();
                     List<DailyRecord> dailyRecords = GreenDaoUtils.getInstance().listAllDailyRecords().stream().filter(x -> !x.getTimestamp().equals(today)).collect(Collectors.toList());
                     List<PackageApp> packageApps = GreenDaoUtils.getInstance().listAllPackageApp();
                     new Thread(() -> {
                         try {
-                            long id = (long) LoginManager.getId();
+                            long id = (long) SharedPreferManager.getId();
                             Server.pushRecord(dailyRecords, id);
                             Server.pushKV(packageApps, id);
                             List<PackageApp> packageApps2 = Server.getKV(id);
                             List<DailyRecord> dailyRecords2 = Server.getRecords(id);
+
                             GreenDaoUtils.getInstance().refreshDB(dailyRecords2, packageApps2);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }).start();
                 }
+                break;
+            case R.id.filterRule:
+                Intent intent = new Intent(MainActivity.this, FilterRuleSetActivity.class);
+                startActivity(intent);
+                drawer.closeDrawer(GravityCompat.START);
                 break;
             default: {
             }

@@ -1,6 +1,8 @@
 package com.example.a12260.szh.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.graphics.Paint;
+import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,10 +17,18 @@ import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
 import com.example.a12260.szh.utils.PieChartUtils;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.OnRangeSelectedListener;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,7 +53,7 @@ import lecho.lib.hellocharts.view.PieChartView;
 /**
  * @author 12260
  */
-public class MonthlyFragment extends Fragment {
+public class MonthlyFragment extends Fragment implements OnDateSelectedListener, OnRangeSelectedListener {
     private PieChartView pieChart;
     private LineChartView lineChart;
     private PieChartData pieChartData;
@@ -55,6 +65,7 @@ public class MonthlyFragment extends Fragment {
     private Map<String, List<DailyRecord>> map;
     private List<Long> sumLineData;
     private long sum;
+    private MaterialCalendarView calendarView;
 
     @Nullable
     @Override
@@ -62,11 +73,70 @@ public class MonthlyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_two_charts, container, false);
         pieChart = view.findViewById(R.id.pie);
         lineChart = view.findViewById(R.id.line);
+        this.calendarView = view.findViewById(R.id.calendarView);
         Bundle bundle = getArguments();
         start = Objects.requireNonNull(bundle).getLong("start");
         init();
+        initCalendar();
         buildPieChart(start);
         return view;
+    }
+
+    void initCalendar() {
+        calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_RANGE);
+        calendarView.setOnDateChangedListener(this);
+        calendarView.setOnRangeSelectedListener(this);
+
+        long firstEnabledDay = GreenDaoUtils.getInstance().getMinDate();
+        long minDate = CalendarUtils.getIntervalOfMonth(firstEnabledDay).getStart();
+        long lastEnabledDay = Math.max(CalendarUtils.getFirstTimestampOfDay(), GreenDaoUtils.getInstance().getMaxDate());
+        long maxDate = CalendarUtils.getIntervalOfMonth(lastEnabledDay).getEnd() - 1;
+        calendarView.state().edit().setMinimumDate(new Date(minDate)).setMaximumDate(new Date(maxDate)).commit();
+        calendarView.addDecorator(new MonthlyFragment.MyDayViewDecorator(firstEnabledDay, lastEnabledDay));
+//        calendarView.setdates
+    }
+
+    class MyDayViewDecorator implements DayViewDecorator {
+        private long first;
+        private long last;
+
+        MyDayViewDecorator(long first, long last) {
+            this.first = first;
+            this.last = last;
+        }
+
+        @Override
+        public boolean shouldDecorate(CalendarDay day) {
+            long t = day.getCalendar().getTimeInMillis();
+            return t >= first && t <= last;
+        }
+
+        @Override
+        public void decorate(DayViewFacade view) {
+            view.setDaysDisabled(false);
+            //     view.setSelectionDrawable(getResources().getDrawable(R.drawable.ttt, null));
+        }
+    }
+
+    boolean isSelectFirstDay = true;
+
+    @Override
+    public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+        if (!isSelectFirstDay) {
+            return;
+        }
+        long t = date.getCalendar().getTimeInMillis();
+        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfMonth(t);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(interval.getStart());
+        isSelectFirstDay = false;
+        int daysSpentInMonth = CalendarUtils.getDaysPastInMonth(interval.getStart());
+        for (int i = 0; i < daysSpentInMonth; i++) {
+            widget.setDateSelected(new Date(calendar.getTimeInMillis()), true);
+            calendar.add(Calendar.DATE, 1);
+        }
+        isSelectFirstDay = true;
+        buildPieChart(interval.getStart());
     }
 
     private void init() {
@@ -80,16 +150,12 @@ public class MonthlyFragment extends Fragment {
         pieChart.setValueSelectionEnabled(true);
         pieChart.setViewportCalculationEnabled(true);
         pieChart.setOnValueTouchListener(listener);
-        //  pieChart.setAnimation(new RotateAnimation());
 
         lineChartData = new LineChartData();
-        //lineChartData.setAxisYLeft(new Axis().setAutoGenerated(true).setHasTiltedLabels(true));
-        // lineChartData.setAxisYLeft(new Axis().setAutoGenerated(false).setHasTiltedLabels(true));
         lineChartData.setAxisXBottom(new Axis().setHasTiltedLabels(true));
         lineChart.setLineChartData(lineChartData);
         lineChart.setValueSelectionEnabled(false);
         lineChart.setZoomEnabled(false);
-        //  lineChart.setAnimation(new TranslateAnimation());
     }
 
     private void buildPieChartData(long timestamp) {
@@ -174,7 +240,7 @@ public class MonthlyFragment extends Fragment {
                     .setColor(getResources().getColor(R.color.c1, null))
                     .setFilled(true)
                     .setAreaTransparency(64)
-                    .setCubic(true)
+                    //   .setCubic(true)
                     .setHasLabels(true)
                     .setHasLabelsOnlyForSelected(false);
             lines.add(line);
@@ -189,6 +255,11 @@ public class MonthlyFragment extends Fragment {
                 value.setTarget(value.getX(), (float) Math.ceil(times.get(i) * 1.0 / 60000));
             }
         }
+
+    }
+
+    @Override
+    public void onRangeSelected(@NonNull MaterialCalendarView widget, @NonNull List<CalendarDay> dates) {
 
     }
 
