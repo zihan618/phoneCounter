@@ -50,9 +50,7 @@ public class MyApplication extends Application {
             PackageManager packageManager = context.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
             // if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-            String result = packageInfo.applicationInfo.loadLabel(packageManager).toString();
-            AppPackageNameMapper.getInstance().register(packageName, result);
-            return result;
+            return packageInfo.applicationInfo.loadLabel(packageManager).toString();
         } catch (PackageManager.NameNotFoundException e) {
             return context.getString(R.string.unknownAppName);
         }

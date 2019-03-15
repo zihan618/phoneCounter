@@ -21,16 +21,16 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.activity.LoginActivity"
+            android:name=".component.activity.LoginActivity"
             android:label="@string/title_activity_login" />
 
-        <activity android:name=".ui.activity.FilterRuleSetActivity" />
+        <activity android:name=".component.activity.FilterRuleSetActivity" />
 
         <service
-            android:name=".logic.UsageCollectService"
+            android:name=".component.UsageCollectService"
             android:exported="false" />
 
-        <activity android:name=".ui.activity.MainActivity">
+        <activity android:name=".component.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

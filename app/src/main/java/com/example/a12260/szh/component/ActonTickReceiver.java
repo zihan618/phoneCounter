@@ -1,4 +1,4 @@
-package com.example.a12260.szh.logic;
+package com.example.a12260.szh.component;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -6,13 +6,11 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.R;
-import com.example.a12260.szh.ui.activity.MainActivity;
+import com.example.a12260.szh.component.activity.MainActivity;
 import com.example.a12260.szh.utils.GreenDaoUtils;
-import com.example.a12260.szh.utils.MyApplication;
 import com.example.a12260.szh.utils.ServiceUtils;
 
 import androidx.core.app.NotificationCompat;
@@ -20,7 +18,7 @@ import androidx.core.app.NotificationCompat;
 /**
  * @author 12260
  */
-public class MyReceiver extends BroadcastReceiver {
+public class ActonTickReceiver extends BroadcastReceiver {
     NotificationManager manager;
     PendingIntent pendingIntent;
 

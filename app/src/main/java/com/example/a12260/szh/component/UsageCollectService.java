@@ -1,4 +1,4 @@
-package com.example.a12260.szh.logic;
+package com.example.a12260.szh.component;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -9,13 +9,12 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.os.PowerManager;
 
 import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.R;
-import com.example.a12260.szh.ui.activity.MainActivity;
+import com.example.a12260.szh.component.activity.MainActivity;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
 

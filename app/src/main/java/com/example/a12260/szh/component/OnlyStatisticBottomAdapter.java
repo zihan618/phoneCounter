@@ -1,12 +1,12 @@
-package com.example.a12260.szh.ui;
+package com.example.a12260.szh.component;
 
 import android.content.Context;
 import android.os.Bundle;
 
 import com.example.a12260.szh.R;
-import com.example.a12260.szh.ui.fragment.DailyFragment;
-import com.example.a12260.szh.ui.fragment.MonthlyFragment;
-import com.example.a12260.szh.ui.fragment.WeeklyFragment;
+import com.example.a12260.szh.component.fragment.DailyFragment;
+import com.example.a12260.szh.component.fragment.MonthlyFragment;
+import com.example.a12260.szh.component.fragment.WeeklyFragment;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.MyApplication;
 

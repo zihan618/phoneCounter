@@ -1,4 +1,4 @@
-package com.example.a12260.szh.ui.activity;
+package com.example.a12260.szh.component.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

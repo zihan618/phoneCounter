@@ -1,4 +1,4 @@
-package com.example.a12260.szh.ui.fragment;
+package com.example.a12260.szh.component.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

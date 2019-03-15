@@ -1,4 +1,4 @@
-package com.example.a12260.szh.ui.activity;
+package com.example.a12260.szh.component.activity;
 
 import android.app.ActionBar;
 import android.app.AppOpsManager;
@@ -9,8 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +19,9 @@ import android.widget.TextView;
 import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.Entity.PackageApp;
 import com.example.a12260.szh.R;
-import com.example.a12260.szh.logic.MyReceiver;
-import com.example.a12260.szh.logic.UsageCollectService;
-import com.example.a12260.szh.ui.OnlyStatisticBottomAdapter;
+import com.example.a12260.szh.component.ActonTickReceiver;
+import com.example.a12260.szh.component.UsageCollectService;
+import com.example.a12260.szh.component.OnlyStatisticBottomAdapter;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.SharedPreferManager;
@@ -50,7 +48,7 @@ import androidx.viewpager.widget.ViewPager;
  * @author 12260
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-    MyReceiver myReceiver;
+    ActonTickReceiver actonTickReceiver;
     BottomNavigationView bottomNavigationView;
     private DrawerLayout drawer;
     boolean hasAuth() {
@@ -137,17 +135,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     void startMyReceiver() {
-        myReceiver = new MyReceiver();
+        actonTickReceiver = new ActonTickReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
-        registerReceiver(myReceiver, intentFilter);
+        registerReceiver(actonTickReceiver, intentFilter);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //  GreenDaoUtils.getInstance().generateDummyData(CalendarUtils.getIntervalOfMonth().getStart(), CalendarUtils.getFirstTimestampOfDay());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer);
+        setContentView(R.layout.activity_main);
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.hide();
@@ -189,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(myReceiver);
+        unregisterReceiver(actonTickReceiver);
     }
 
     @Override

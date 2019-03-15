@@ -1,8 +1,6 @@
-package com.example.a12260.szh.ui.fragment;
+package com.example.a12260.szh.component.fragment;
 
 import android.annotation.SuppressLint;
-import android.graphics.Paint;
-import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;

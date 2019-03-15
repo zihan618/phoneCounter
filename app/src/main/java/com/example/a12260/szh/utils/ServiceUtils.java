@@ -15,8 +15,9 @@ public class ServiceUtils {
      */
     public static boolean isServiceRunning(Class cla) {
         String serviceName = cla.getName();
-        if (("").equals(serviceName) || serviceName == null)
+        if (("").equals(serviceName) || serviceName == null) {
             return false;
+        }
         ActivityManager myManager = (ActivityManager) MyApplication.getContext()
                 .getSystemService(Context.ACTIVITY_SERVICE);
         ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager

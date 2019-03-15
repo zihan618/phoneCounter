@@ -1,4 +1,4 @@
-package com.example.a12260.szh.ui.activity;
+package com.example.a12260.szh.component.activity;
 
 import android.content.pm.ApplicationInfo;
 import android.os.AsyncTask;

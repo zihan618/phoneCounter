@@ -1,14 +1,13 @@
-package com.example.a12260.szh.ui;
+package com.example.a12260.szh.component;
 
 import android.content.Context;
 
 import com.example.a12260.szh.R;
-import com.example.a12260.szh.ui.fragment.CommunityFragment;
-import com.example.a12260.szh.ui.fragment.MainStatisticsFragment;
-import com.example.a12260.szh.ui.fragment.PlanFragment;
+import com.example.a12260.szh.component.fragment.CommunityFragment;
+import com.example.a12260.szh.component.fragment.MainStatisticsFragment;
+import com.example.a12260.szh.component.fragment.PlanFragment;
 import com.example.a12260.szh.utils.MyApplication;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;

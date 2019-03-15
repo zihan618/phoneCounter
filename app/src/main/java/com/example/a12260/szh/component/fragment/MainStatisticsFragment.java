@@ -1,4 +1,4 @@
-package com.example.a12260.szh.ui.fragment;
+package com.example.a12260.szh.component.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,9 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
 
-import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.Entity.MonthRecord;
 import com.example.a12260.szh.Entity.WeekRecord;
 import com.example.a12260.szh.R;
@@ -18,11 +16,9 @@ import com.example.a12260.szh.utils.GreenDaoUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
