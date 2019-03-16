@@ -27,10 +27,10 @@
 
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
             android:id="@+id/calendarView"
-            android:layout_width="388dp"
+            android:layout_width="374dp"
             android:layout_height="380dp"
-            android:layout_marginTop="8dp"
             android:layout_gravity="center"
+            android:layout_marginTop="8dp"
             app:mcv_weekDayLabels="@array/weekDays" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

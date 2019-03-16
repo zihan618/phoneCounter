@@ -21,7 +21,7 @@
 
     <color name="c1">#0000e4</color>
     <color name="c7">#916eff</color>
-
+    <color name="piuk">#ff5252</color>
     <color name="blue_white">#E3F2FD</color>
     <array name="colorArray">
         <item>#ff1744</item>

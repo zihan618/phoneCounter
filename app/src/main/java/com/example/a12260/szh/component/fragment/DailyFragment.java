@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 
 import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.R;
-import com.example.a12260.szh.component.MyDayViewDecorator;
+import com.example.a12260.szh.component.DateRangeDecorator;
+import com.example.a12260.szh.component.DateStyleDecorator;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
@@ -78,16 +79,14 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
             @Override
             public void onValueSelected(int arcIndex, SliceValue value) {
                 pieChart.cancelDataAnimation();
-                pd.setCenterText1(appNames.get(arcIndex)).setCenterText2(String.format(getString(R.string.usageLabel), (int) value.getValue()));
+                pd.setCenterText1(appNames.get(arcIndex)).setCenterText2(PieChartUtils.buildCenterText2((int) value.getValue()));
                 pieChart.startDataAnimation(300);
             }
 
             @Override
             public void onValueDeselected() {
                 pieChart.cancelDataAnimation();
-//                pd.setCenterText1(appNames.get(arcIndex)).setCenterText2(text);
-                pd.setCenterText1(getString(R.string.total)).setCenterText2(
-                        String.format(getString(R.string.usageLabel), (sum)));
+                pd.setCenterText1(getString(R.string.total)).setCenterText2(PieChartUtils.buildCenterText2((int) sum));
                 pieChart.startDataAnimation(300);
             }
         };
@@ -104,7 +103,9 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
         System.out.println(new Date(minDate));
         System.out.println(new Date(maxDate));
         calendarView.state().edit().setMinimumDate(new Date(minDate)).setMaximumDate(new Date(maxDate)).commit();
-        calendarView.addDecorator(new MyDayViewDecorator(firstEnabledDay, lastEnabledDay));
+        calendarView.addDecorator(new DateRangeDecorator(firstEnabledDay, lastEnabledDay));
+        calendarView.addDecorator(new DateStyleDecorator(firstEnabledDay, lastEnabledDay));
+        calendarView.setWeekDayTextAppearance(R.style.weekLabelStyle);
     }
 
     private void buildPieChartData(long timestamp) {
@@ -156,7 +157,6 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-        System.out.println(new Date(date.getCalendar().getTimeInMillis()));
         buildPieChart(date.getCalendar().getTimeInMillis());
     }
 }

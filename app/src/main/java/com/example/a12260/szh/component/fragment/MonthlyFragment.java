@@ -11,15 +11,16 @@ import android.view.ViewGroup;
 import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.Entity.MonthRecord;
 import com.example.a12260.szh.R;
+import com.example.a12260.szh.component.DateRangeDecorator;
+import com.example.a12260.szh.component.DateStyleDecorator;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
 import com.example.a12260.szh.utils.PieChartUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.DayViewDecorator;
-import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import com.prolificinteractive.materialcalendarview.OnRangeSelectedListener;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,7 +52,7 @@ import lecho.lib.hellocharts.view.PieChartView;
 /**
  * @author 12260
  */
-public class MonthlyFragment extends Fragment implements OnDateSelectedListener, OnRangeSelectedListener {
+public class MonthlyFragment extends Fragment implements OnMonthChangedListener {
     private PieChartView pieChart;
     private LineChartView lineChart;
     private PieChartData pieChartData;
@@ -82,60 +83,38 @@ public class MonthlyFragment extends Fragment implements OnDateSelectedListener,
 
     void initCalendar() {
         calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_RANGE);
-        calendarView.setOnDateChangedListener(this);
-        calendarView.setOnRangeSelectedListener(this);
+        calendarView.setOnMonthChangedListener(this);
 
         long firstEnabledDay = GreenDaoUtils.getInstance().getMinDate();
         long minDate = CalendarUtils.getIntervalOfMonth(firstEnabledDay).getStart();
         long lastEnabledDay = Math.max(CalendarUtils.getFirstTimestampOfDay(), GreenDaoUtils.getInstance().getMaxDate());
         long maxDate = CalendarUtils.getIntervalOfMonth(lastEnabledDay).getEnd() - 1;
         calendarView.state().edit().setMinimumDate(new Date(minDate)).setMaximumDate(new Date(maxDate)).commit();
-        calendarView.addDecorator(new MyDayViewDecorator(firstEnabledDay, lastEnabledDay));
-//        calendarView.setdates
-    }
-
-    class MyDayViewDecorator implements DayViewDecorator {
-        private long first;
-        private long last;
-
-        MyDayViewDecorator(long first, long last) {
-            this.first = first;
-            this.last = last;
-        }
-
-        @Override
-        public boolean shouldDecorate(CalendarDay day) {
-            long t = day.getCalendar().getTimeInMillis();
-            return t >= first && t <= last;
-        }
-
-        @Override
-        public void decorate(DayViewFacade view) {
-            view.setDaysDisabled(false);
-            //     view.setSelectionDrawable(getResources().getDrawable(R.drawable.ttt, null));
-        }
+        calendarView.addDecorator(new DateRangeDecorator(firstEnabledDay, lastEnabledDay));
+        calendarView.addDecorator(new DateStyleDecorator(firstEnabledDay, lastEnabledDay));
+        calendarView.setWeekDayTextAppearance(R.style.weekLabelStyle);
     }
 
     boolean isSelectFirstDay = true;
 
-    @Override
-    public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-        if (!isSelectFirstDay) {
-            return;
-        }
-        long t = date.getCalendar().getTimeInMillis();
-        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfMonth(t);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(interval.getStart());
-        isSelectFirstDay = false;
-        int daysSpentInMonth = CalendarUtils.getDaysPastInMonth(interval.getStart());
-        for (int i = 0; i < daysSpentInMonth; i++) {
-            widget.setDateSelected(new Date(calendar.getTimeInMillis()), true);
-            calendar.add(Calendar.DATE, 1);
-        }
-        isSelectFirstDay = true;
-        buildPieChart(interval.getStart());
-    }
+//    @Override
+//    public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+//        if (!isSelectFirstDay) {
+//            return;
+//        }
+//        long t = date.getCalendar().getTimeInMillis();
+//        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfMonth(t);
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(interval.getStart());
+//        isSelectFirstDay = false;
+//        int daysSpentInMonth = CalendarUtils.getDaysPastInMonth(interval.getStart());
+//        for (int i = 0; i < daysSpentInMonth; i++) {
+//            widget.setDateSelected(new Date(calendar.getTimeInMillis()), true);
+//            calendar.add(Calendar.DATE, 1);
+//        }
+//        isSelectFirstDay = true;
+//        buildPieChart(interval.getStart());
+//    }
 
     private void init() {
         //图标的基本样式设定 和 事件回调函数设置
@@ -257,7 +236,9 @@ public class MonthlyFragment extends Fragment implements OnDateSelectedListener,
     }
 
     @Override
-    public void onRangeSelected(@NonNull MaterialCalendarView widget, @NonNull List<CalendarDay> dates) {
+    public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
+        long t = CalendarUtils.getIntervalOfMonth(date.getCalendar().getTimeInMillis()).getStart();
+        buildPieChart(t);
 
     }
 
