@@ -1,4 +1,4 @@
-package com.szh.a12260.phone_counter.Entity;
+package com.szh.a12260.phone_counter.entity;
 
 /**
  * @author 12260

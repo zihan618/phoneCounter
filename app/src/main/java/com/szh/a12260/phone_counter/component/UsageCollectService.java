@@ -12,7 +12,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.PowerManager;
 
-import com.szh.a12260.phone_counter.Entity.DailyRecord;
+import com.szh.a12260.phone_counter.entity.DailyRecord;
 import com.szh.a12260.phone_counter.R;
 import com.szh.a12260.phone_counter.component.activity.MainActivity;
 import com.szh.a12260.phone_counter.utils.GreenDaoUtils;

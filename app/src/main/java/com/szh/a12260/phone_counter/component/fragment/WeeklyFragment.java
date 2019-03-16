@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.szh.a12260.phone_counter.Entity.DailyRecord;
-import com.szh.a12260.phone_counter.Entity.WeekRecord;
+import com.szh.a12260.phone_counter.entity.DailyRecord;
+import com.szh.a12260.phone_counter.entity.WeekRecord;
 import com.szh.a12260.phone_counter.R;
 import com.szh.a12260.phone_counter.component.DateRangeDecorator;
 import com.szh.a12260.phone_counter.component.DateStyleDecorator;

@@ -1,4 +1,4 @@
-package com.szh.a12260.phone_counter.Entity;
+package com.szh.a12260.phone_counter.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

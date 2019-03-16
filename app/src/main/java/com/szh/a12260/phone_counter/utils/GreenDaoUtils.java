@@ -3,16 +3,16 @@ package com.szh.a12260.phone_counter.utils;
 import android.content.pm.ApplicationInfo;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.szh.a12260.phone_counter.Entity.DailyRecord;
-import com.szh.a12260.phone_counter.Entity.DailyRecordDao;
-import com.szh.a12260.phone_counter.Entity.DaoMaster;
-import com.szh.a12260.phone_counter.Entity.DaoSession;
-import com.szh.a12260.phone_counter.Entity.MonthRecord;
-import com.szh.a12260.phone_counter.Entity.MonthRecordDao;
-import com.szh.a12260.phone_counter.Entity.PackageApp;
-import com.szh.a12260.phone_counter.Entity.PackageAppDao;
-import com.szh.a12260.phone_counter.Entity.WeekRecord;
-import com.szh.a12260.phone_counter.Entity.WeekRecordDao;
+import com.szh.a12260.phone_counter.entity.DailyRecord;
+import com.szh.a12260.phone_counter.entity.DailyRecordDao;
+import com.szh.a12260.phone_counter.entity.DaoMaster;
+import com.szh.a12260.phone_counter.entity.DaoSession;
+import com.szh.a12260.phone_counter.entity.MonthRecord;
+import com.szh.a12260.phone_counter.entity.MonthRecordDao;
+import com.szh.a12260.phone_counter.entity.PackageApp;
+import com.szh.a12260.phone_counter.entity.PackageAppDao;
+import com.szh.a12260.phone_counter.entity.WeekRecord;
+import com.szh.a12260.phone_counter.entity.WeekRecordDao;
 import com.szh.a12260.phone_counter.R;
 
 import org.greenrobot.greendao.query.QueryBuilder;

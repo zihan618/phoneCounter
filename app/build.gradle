@@ -51,6 +51,6 @@ dependencies {
 
 greendao {
     schemaVersion 1
-    daoPackage 'com.szh.a12260.phone_counter.Entity'
+    daoPackage 'com.szh.a12260.phone_counter.entity'
     targetGenDir 'src/main/java/'
 }

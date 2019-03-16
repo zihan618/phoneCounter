@@ -1,8 +1,8 @@
 package com.szh.a12260.phone_counter.utils;
 
-import com.szh.a12260.phone_counter.Entity.DailyRecord;
-import com.szh.a12260.phone_counter.Entity.DailyRecordConvert;
-import com.szh.a12260.phone_counter.Entity.PackageApp;
+import com.szh.a12260.phone_counter.entity.DailyRecord;
+import com.szh.a12260.phone_counter.entity.DailyRecordConvert;
+import com.szh.a12260.phone_counter.entity.PackageApp;
 import com.szh.a12260.phone_counter.R;
 import com.szh.a12260.phone_counter.model.WebResult;
 import com.google.gson.Gson;
