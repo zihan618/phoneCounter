@@ -13,17 +13,18 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:touchscreenBlocksFocus="false"
+        app:title="@string/filterRule"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:id="@+id/toolbar">
 
-        <SearchView
-            android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:iconifiedByDefault="false"
-            android:queryHint="@android:string/search_go" />
+        <!--<SearchView-->
+        <!--android:id="@+id/search"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:iconifiedByDefault="false"-->
+        <!--android:queryHint="@android:string/search_go" />-->
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -35,7 +36,12 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_marginStart="26dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:text="@string/al_app"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="22sp" />
 
         <Switch
             android:id="@+id/backgroundSetting"

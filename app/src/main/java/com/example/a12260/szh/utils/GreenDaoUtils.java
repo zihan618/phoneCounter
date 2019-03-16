@@ -1,5 +1,6 @@
 package com.example.a12260.szh.utils;
 
+import android.content.pm.ApplicationInfo;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.a12260.szh.Entity.DailyRecord;
@@ -233,7 +234,7 @@ public class GreenDaoUtils {
         String dbName = MyApplication.getContext().getString(R.string.DBName);
         mHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), dbName, null);
         db = mHelper.getWritableDatabase();
-        // mHelper.onUpgrade(db, 0, 0);
+        //  mHelper.onUpgrade(db, 0, 0);
         mDaoMaster = new DaoMaster(db);
         mDaoSession = mDaoMaster.newSession();
         dailyRecordDao = mDaoSession.getDailyRecordDao();
@@ -279,24 +280,27 @@ public class GreenDaoUtils {
     }
 
     public void generateDummyData(long start, long end) {
-        List<PackageApp> packageApps = packageAppDao.loadAll();
+        System.out.println("开始适合" + new Date(start));
+        List<ApplicationInfo> apps = MyApplication.getContext().getPackageManager().getInstalledApplications(0);
+        List<String> packageApps = apps.stream().filter(x -> (x.flags & ApplicationInfo.FLAG_SYSTEM) <= 0).map(x -> x.packageName).collect(Collectors.toList());
         long t;
         Random random = new Random();
         t = CalendarUtils.getFirstTimestampOfDay(start);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(t);
         while (calendar.getTimeInMillis() < end) {
-            Collections.shuffle(packageApps);
-            List<PackageApp> tmp = packageApps.subList(0, packageApps.size() * 2 / 3);
-            for (PackageApp packageApp : tmp) {
+            //    Collections.shuffle(packageApps);
+            List<String> tmp = packageApps.subList(0, packageApps.size() / 11);
+            for (String packageApp : tmp) {
                 DailyRecord dailyRecord = new DailyRecord();
                 dailyRecord.setTimestamp(calendar.getTimeInMillis());
-                dailyRecord.setPackageName(packageApp.getPackageName());
-                dailyRecord.setTimeSpent((long) ((random.nextInt(80) + 10) * 60000));
+                dailyRecord.setPackageName(packageApp);
+                dailyRecord.setTimeSpent((long) ((random.nextInt(90)) * 60000));
                 dailyRecordDao.save(dailyRecord);
             }
             calendar.add(Calendar.DATE, 1);
         }
+        refreshWeekMonthRecord(t, end);
     }
 
 

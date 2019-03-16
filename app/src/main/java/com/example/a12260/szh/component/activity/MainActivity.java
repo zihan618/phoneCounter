@@ -32,6 +32,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -141,9 +142,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         registerReceiver(actonTickReceiver, intentFilter);
     }
 
+    void dummy() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2019, Calendar.FEBRUARY, 1);
+        GreenDaoUtils.getInstance().generateDummyData(calendar.getTimeInMillis(), CalendarUtils.getFirstTimestampOfDay());
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //  GreenDaoUtils.getInstance().generateDummyData(CalendarUtils.getIntervalOfMonth().getStart(), CalendarUtils.getFirstTimestampOfDay());
+        //   dummy();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getActionBar();
@@ -152,17 +158,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+
+        initNavigationView();
+        initBottomNavigation();
+        requestPermission();
+        startMyService();
+        startMyReceiver();
+    }
+
+    void initNavigationView() {
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
-
         View headerView = navigationView.getHeaderView(0);
         LinearLayout nav_header = headerView.findViewById(R.id.nav_header);
         ImageView login = nav_header.findViewById(R.id.imageView_nav_header);
@@ -178,10 +191,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             login.setImageDrawable(getDrawable(R.drawable.longin));
         }
         nav_header.setOnClickListener(this);
-        initBottomNavigation();
-        requestPermission();
-        startMyService();
-        startMyReceiver();
     }
 
     @Override

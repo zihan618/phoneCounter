@@ -7,13 +7,12 @@ import android.view.ViewGroup;
 
 import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.R;
+import com.example.a12260.szh.component.MyDayViewDecorator;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
 import com.example.a12260.szh.utils.PieChartUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.DayViewDecorator;
-import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
@@ -50,26 +49,7 @@ public class DailyFragment extends Fragment implements OnDateSelectedListener/*,
         //   ButterKnife.bind(this.getTargetFragment());
     }
 
-    class MyDayViewDecorator implements DayViewDecorator {
-        private long first;
-        private long last;
 
-        MyDayViewDecorator(long first, long last) {
-            this.first = first;
-            this.last = last;
-        }
-
-        @Override
-        public boolean shouldDecorate(CalendarDay day) {
-            long t = day.getCalendar().getTimeInMillis();
-            return !(t >= first && t <= last);
-        }
-
-        @Override
-        public void decorate(DayViewFacade view) {
-            view.setDaysDisabled(true);
-        }
-    }
 
     @Nullable
     @Override

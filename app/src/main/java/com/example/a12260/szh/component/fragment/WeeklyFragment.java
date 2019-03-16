@@ -92,8 +92,7 @@ public class WeeklyFragment extends Fragment implements OnDateSelectedListener, 
         System.out.println(new Date(minDate));
         System.out.println(new Date(maxDate));
         calendarView.state().edit().setMinimumDate(new Date(minDate)).setMaximumDate(new Date(maxDate)).commit();
-        calendarView.addDecorator(new WeeklyFragment.MyDayViewDecorator(firstEnabledDay, lastEnabledDay));
-//        calendarView.setdates
+        calendarView.addDecorator(new MyDayViewDecorator(firstEnabledDay, lastEnabledDay));
     }
 
     private void init() {

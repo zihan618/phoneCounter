@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +38,7 @@ public class FilterRuleSetActivity extends AppCompatActivity
     Switch bgSwitch;
     FilterRule filterRule;
     List<String> packs;
+    Toolbar toolbar;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,10 @@ public class FilterRuleSetActivity extends AppCompatActivity
         filterRule = SharedPreferManager.getFilter();
         bgSwitch.setChecked(filterRule.isSelectPartOrAll());
         bgSwitch.setOnCheckedChangeListener(this);
+        toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         new InitRecyclerViewTask().execute();
     }
 

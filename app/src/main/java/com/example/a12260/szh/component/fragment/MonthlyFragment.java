@@ -90,7 +90,7 @@ public class MonthlyFragment extends Fragment implements OnDateSelectedListener,
         long lastEnabledDay = Math.max(CalendarUtils.getFirstTimestampOfDay(), GreenDaoUtils.getInstance().getMaxDate());
         long maxDate = CalendarUtils.getIntervalOfMonth(lastEnabledDay).getEnd() - 1;
         calendarView.state().edit().setMinimumDate(new Date(minDate)).setMaximumDate(new Date(maxDate)).commit();
-        calendarView.addDecorator(new MonthlyFragment.MyDayViewDecorator(firstEnabledDay, lastEnabledDay));
+        calendarView.addDecorator(new MyDayViewDecorator(firstEnabledDay, lastEnabledDay));
 //        calendarView.setdates
     }
 

@@ -100,4 +100,5 @@
     <string name="server_address">http://192.168.1.42:8083/server/</string>
     <string name="DBName">usageDataBD</string>
     <string name="filterRule">过滤规则</string>
+    <string name="al_app">全部</string>
 </resources>
