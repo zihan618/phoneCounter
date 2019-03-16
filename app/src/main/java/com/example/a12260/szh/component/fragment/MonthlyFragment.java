@@ -95,7 +95,6 @@ public class MonthlyFragment extends Fragment implements OnMonthChangedListener 
         calendarView.setWeekDayTextAppearance(R.style.weekLabelStyle);
     }
 
-
     private void init() {
         //图标的基本样式设定 和 事件回调函数设置
         pieChartData = new PieChartData();
@@ -133,8 +132,9 @@ public class MonthlyFragment extends Fragment implements OnMonthChangedListener 
             System.out.println("长度不一样，先停了");
         }
         map = GreenDaoUtils.getInstance().listDailyRecordsInMonth(timestamp);
-        appNames = new ArrayList<>(packNames.size());
         days = CalendarUtils.getDaysPastInMonth(timestamp);
+        //   map.entrySet().forEach(x -> System.out.println(x.getKey() +"--+++++++++++++" + x.getValue().size()));
+        appNames = new ArrayList<>(packNames.size());
         List<Double> percents = minutes.stream().map(x -> x * 1.0 / sum).collect(Collectors.toList());
         Double percentThreshold = MyApplication.getContext().getResources().getInteger(R.integer.percentLabelThreshold) * 1.0 / 100;
         List<Integer> colors = PieChartUtils.getColors(monthRecords.size());
@@ -169,6 +169,7 @@ public class MonthlyFragment extends Fragment implements OnMonthChangedListener 
         //构建按总时间来话折线图的数据
         List<List<Long>> data = map.values().stream().map(x -> GreenDaoUtils.getInstance().buildDailyTime(t, days, x)).collect(Collectors.toList());
         sumLineData = new ArrayList<>(days);
+        // data.stream().forEach(x -> System.out.println("+++++++++++++++++++++" + x.size()));
         for (int i = 0; i < days; i++) {
             long tmp = 0;
             for (int j = 0; j < data.size(); j++) {
@@ -179,14 +180,24 @@ public class MonthlyFragment extends Fragment implements OnMonthChangedListener 
         buildLineChartData(sumLineData);
     }
 
+//    private void preparePieChartData(int partNum) {
+//        pieChartData
+//    }
+
     private void buildLineChartData(List<Long> times) {
+        System.out.println("oh mygoggg" + times);
         if (lineChartData.getLines().isEmpty() || lineChartData.getLines().get(0).getValues().size() != times.size()) {
             List<AxisValue> axisXValues = new ArrayList<>();
             List<Line> lines = new ArrayList<>();
             List<PointValue> values = new ArrayList<>();
             for (int j = 0; j < times.size(); ++j) {
                 int x = j + 1;
-                values.add(new PointValue(x, (float) Math.ceil(times.get(j) * 1.0 / 60000)));
+                PointValue pointValue = new PointValue(x, (float) Math.ceil(times.get(j) * 1.0 / 60000));
+                if (times.size() >= 15 && j % 2 != 0) {
+                    pointValue.setLabel("");
+                }
+                values.add(pointValue);
+
                 axisXValues.add(new AxisValue(x));
             }
             Line line = new Line(values);
@@ -217,8 +228,8 @@ public class MonthlyFragment extends Fragment implements OnMonthChangedListener 
 
     @Override
     public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
-        long t = CalendarUtils.getIntervalOfMonth(date.getCalendar().getTimeInMillis()).getStart();
-        buildPieChart(t);
+        start = CalendarUtils.getIntervalOfMonth(date.getCalendar().getTimeInMillis()).getStart();
+        buildPieChart(start);
 
     }
 

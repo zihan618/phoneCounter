@@ -54,8 +54,8 @@ public class GreenDaoUtils {
             packageApp.setPackageName(packageName);
             packageAppDao.save(packageApp);
 
-            System.out.println(packageApp);
-            System.out.println(packageAppDao.loadAll());
+            //   System.out.println(packageApp);
+            //   System.out.println(packageAppDao.loadAll());
             return packageApp.getAppName();
         }
         return packageApps.get(0).getAppName();
@@ -234,7 +234,7 @@ public class GreenDaoUtils {
         String dbName = MyApplication.getContext().getString(R.string.DBName);
         mHelper = new DaoMaster.DevOpenHelper(MyApplication.getContext(), dbName, null);
         db = mHelper.getWritableDatabase();
-        //  mHelper.onUpgrade(db, 0, 0);
+        //     mHelper.onUpgrade(db, 0, 0);
         mDaoMaster = new DaoMaster(db);
         mDaoSession = mDaoMaster.newSession();
         dailyRecordDao = mDaoSession.getDailyRecordDao();
@@ -251,36 +251,37 @@ public class GreenDaoUtils {
         weekRecordDao.deleteAll();
         monthRecordDao.deleteAll();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(start);
+        calendar.setTimeInMillis(CalendarUtils.getIntervalOfWeek(start).getStart());
         while (calendar.getTimeInMillis() < end) {
-            System.out.println("今天是" + new Date(calendar.getTimeInMillis()));
+//            System.out.println("周今天是" + new Date(calendar.getTimeInMillis()));
             doWeeklySummary(calendar.getTimeInMillis());
+//            System.out.println("昨晚之后有" + monthRecordDao.loadAll().size());
             calendar.add(Calendar.DATE, 7);
         }
-        calendar.setTimeInMillis(start);
+        calendar.setTimeInMillis(CalendarUtils.getIntervalOfMonth(start).getStart());
         while (calendar.getTimeInMillis() < end) {
-            System.out.println("今天是" + new Date(calendar.getTimeInMillis()));
+//            System.out.println("月今天是" + new Date(calendar.getTimeInMillis()));
             doMonthlySummary(calendar.getTimeInMillis());
+//            System.out.println("昨晚之后有" + monthRecordDao.loadAll().size());
             calendar.add(Calendar.MONTH, 1);
         }
     }
 
     public void refreshDB(List<DailyRecord> dailyRecords, List<PackageApp> packageApps) {
-        System.out.println("他们的 doumeiyou ");
+        //   System.out.println("他们的 doumeiyou ");
         List<DailyRecord> todayData = this.listDailyRecordsInDate(CalendarUtils.getFirstTimestampOfDay());
         dailyRecordDao.deleteAll();
         packageAppDao.deleteAll();
         dailyRecords.addAll(todayData);
         dailyRecords.forEach(x -> x.setId(null));
-        System.out.println("要写入的数据有:" + dailyRecords.size());
+        // System.out.println("要写入的数据有:" + dailyRecords.size());
         dailyRecordDao.saveInTx(dailyRecords);
-        System.out.println("写入的数据有:" + dailyRecordDao.loadAll().size());
+        //   System.out.println("写入的数据有:" + dailyRecordDao.loadAll().size());
         packageAppDao.saveInTx(packageApps);
         refreshWeekMonthRecord(dailyRecords.stream().map(DailyRecord::getTimestamp).distinct().min(Long::compareTo).get(), System.currentTimeMillis());
     }
 
     public void generateDummyData(long start, long end) {
-        System.out.println("开始适合" + new Date(start));
         List<ApplicationInfo> apps = MyApplication.getContext().getPackageManager().getInstalledApplications(0);
         List<String> packageApps = apps.stream().filter(x -> (x.flags & ApplicationInfo.FLAG_SYSTEM) <= 0).map(x -> x.packageName).collect(Collectors.toList());
         long t;
@@ -288,9 +289,10 @@ public class GreenDaoUtils {
         t = CalendarUtils.getFirstTimestampOfDay(start);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(t);
+        Collections.shuffle(packageApps, new Random(23L));
         while (calendar.getTimeInMillis() < end) {
-            //    Collections.shuffle(packageApps);
-            List<String> tmp = packageApps.subList(0, packageApps.size() / 11);
+            List<String> tmp = packageApps.subList(32, packageApps.size() / 11 + 32);
+            //   System.out.println("sizr" + tmp.size());
             for (String packageApp : tmp) {
                 DailyRecord dailyRecord = new DailyRecord();
                 dailyRecord.setTimestamp(calendar.getTimeInMillis());
@@ -298,6 +300,8 @@ public class GreenDaoUtils {
                 dailyRecord.setTimeSpent((long) ((random.nextInt(90)) * 60000));
                 dailyRecordDao.save(dailyRecord);
             }
+            //  System.out.println("今天是：" + calendar.getTime());
+            //  System.out.println("you" + dailyRecordDao.loadAll().size());
             calendar.add(Calendar.DATE, 1);
         }
         refreshWeekMonthRecord(t, end);

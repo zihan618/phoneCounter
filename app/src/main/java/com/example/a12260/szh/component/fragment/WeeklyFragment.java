@@ -226,6 +226,7 @@ public class WeeklyFragment extends Fragment implements OnDateSelectedListener {
         CalendarUtils.Interval interval = CalendarUtils.getIntervalOfWeek(t);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(interval.getStart());
+        start = interval.getStart();
         isSelectFirstDay = false;
         int daysSpentInMonth = CalendarUtils.getDaysPastInWeek(interval.getStart());
         for (int i = 0; i < daysSpentInMonth; i++) {

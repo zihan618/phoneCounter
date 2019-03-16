@@ -143,13 +143,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     void dummy() {
+        System.out.println("wocao");
+        ;
         Calendar calendar = Calendar.getInstance();
         calendar.set(2019, Calendar.FEBRUARY, 1);
         GreenDaoUtils.getInstance().generateDummyData(calendar.getTimeInMillis(), CalendarUtils.getFirstTimestampOfDay());
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //   dummy();
+        // dummy();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getActionBar();

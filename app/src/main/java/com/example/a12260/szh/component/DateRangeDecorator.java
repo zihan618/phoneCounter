@@ -24,7 +24,6 @@ public class DateRangeDecorator implements DayViewDecorator {
     public DateRangeDecorator(long first, long last) {
         this.first = first;
         this.last = last;
-        System.out.println("last: -- " + new Date(last));
     }
 
     @Override

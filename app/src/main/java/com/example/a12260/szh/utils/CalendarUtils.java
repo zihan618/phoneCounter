@@ -137,8 +137,8 @@ public class CalendarUtils {
 
     public static void main(String[] args) {
         System.out.println(getDaysPastInMonth(System.currentTimeMillis()));
-//        System.out.println((getIntervalOfWeek(new Date().getTime())));
-//        System.out.println((getIntervalOfMonth(new Date().getTime())));
+        //        System.out.println((getIntervalOfWeek(new Date().getTime())));
+        //        System.out.println((getIntervalOfMonth(new Date().getTime())));
     }
 
     public static class Interval {
