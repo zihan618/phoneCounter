@@ -81,7 +81,7 @@ public class MonthlyFragment extends Fragment implements OnMonthChangedListener 
         return view;
     }
 
-    void initCalendar() {
+    private void initCalendar() {
         calendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_RANGE);
         calendarView.setOnMonthChangedListener(this);
 
@@ -95,26 +95,6 @@ public class MonthlyFragment extends Fragment implements OnMonthChangedListener 
         calendarView.setWeekDayTextAppearance(R.style.weekLabelStyle);
     }
 
-    boolean isSelectFirstDay = true;
-
-//    @Override
-//    public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-//        if (!isSelectFirstDay) {
-//            return;
-//        }
-//        long t = date.getCalendar().getTimeInMillis();
-//        CalendarUtils.Interval interval = CalendarUtils.getIntervalOfMonth(t);
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(interval.getStart());
-//        isSelectFirstDay = false;
-//        int daysSpentInMonth = CalendarUtils.getDaysPastInMonth(interval.getStart());
-//        for (int i = 0; i < daysSpentInMonth; i++) {
-//            widget.setDateSelected(new Date(calendar.getTimeInMillis()), true);
-//            calendar.add(Calendar.DATE, 1);
-//        }
-//        isSelectFirstDay = true;
-//        buildPieChart(interval.getStart());
-//    }
 
     private void init() {
         //图标的基本样式设定 和 事件回调函数设置
