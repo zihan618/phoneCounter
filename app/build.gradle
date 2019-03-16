@@ -7,7 +7,7 @@ android {
         packagingOptions {
             exclude 'META-INF/proguard/androidx-annotations.pro'
         }
-        applicationId "com.example.a12260.szh"
+        applicationId "com.szh.a12260.phone_counter"
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
@@ -51,6 +51,6 @@ dependencies {
 
 greendao {
     schemaVersion 1
-    daoPackage 'com.example.a12260.szh.Entity'
+    daoPackage 'com.szh.a12260.phone_counter.Entity'
     targetGenDir 'src/main/java/'
 }
