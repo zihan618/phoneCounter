@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -28,29 +30,42 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * @author 12260
  */
-public class FilterRuleSetActivity extends AppCompatActivity {
+public class FilterRuleSetActivity extends AppCompatActivity
+        implements CompoundButton.OnCheckedChangeListener {
     RecyclerView recyclerView;
     ProgressBar progressBar;
-
+    Switch bgSwitch;
+    FilterRule filterRule;
+    List<String> packs;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_app_filter);
-
         List<ApplicationInfo> apps = getPackageManager().getInstalledApplications(0);
-        List<String> packs = apps.stream().filter(x -> (x.flags & ApplicationInfo.FLAG_SYSTEM) <= 0).map(x -> x.packageName).collect(Collectors.toList());
-        System.out.println("总共有:" + packs.size());
+        packs = apps.stream().filter(x -> (x.flags & ApplicationInfo.FLAG_SYSTEM) <= 0).map(x -> x.packageName).collect(Collectors.toList());
         recyclerView = findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         progressBar = findViewById(R.id.loading);
-        new InitRecyclerViewTask().execute(packs);
+        bgSwitch = findViewById(R.id.backgroundSetting);
+        filterRule = SharedPreferManager.getFilter();
+        bgSwitch.setChecked(filterRule.isSelectPartOrAll());
+        bgSwitch.setOnCheckedChangeListener(this);
+        new InitRecyclerViewTask().execute();
     }
 
-    class InitRecyclerViewTask extends AsyncTask<List<String>, Void, Void> {
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        filterRule.setSelectPartOrAll(isChecked);
+        filterRule.getPackages().clear();
+        SharedPreferManager.saveFilterRule(filterRule);
+        recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    class InitRecyclerViewTask extends AsyncTask<Void, Void, Void> {
 
         @Override
-        protected Void doInBackground(List<String>... lists) {
-            recyclerView.setAdapter(new AppAdapter(SharedPreferManager.getFilter(), lists[0]));
+        protected Void doInBackground(Void... lists) {
+            recyclerView.setAdapter(new AppAdapter(filterRule, packs));
 
             return null;
         }
@@ -83,6 +98,7 @@ public class FilterRuleSetActivity extends AppCompatActivity {
         public AppAdapter(FilterRule filterRule, List<String> packageApps1) {
             this.filterRule = filterRule;
             this.packageApps = packageApps1;
+
         }
 
         @NonNull
@@ -97,6 +113,26 @@ public class FilterRuleSetActivity extends AppCompatActivity {
             String pack = packageApps.get(position);
             holder.textView.setText(MyApplication.getAppName(pack));
             holder.imageView.setImageDrawable(MyApplication.getAppIcon(pack));
+            if (filterRule.isSelectPartOrAll()) {
+                holder.aSwitch.setChecked(true);
+                if (filterRule.getPackages().contains(pack)) {
+                    holder.aSwitch.setChecked(false);
+                }
+            } else {
+                holder.aSwitch.setChecked(false);
+                if (filterRule.getPackages().contains(pack)) {
+                    holder.aSwitch.setChecked(true);
+                }
+            }
+            holder.aSwitch.setOnCheckedChangeListener((x, y) -> {
+                if (filterRule.isSelectPartOrAll() != y) {
+                    filterRule.getPackages().add(pack);
+                } else {
+                    filterRule.getPackages().remove(pack);
+                }
+                SharedPreferManager.saveFilterRule(filterRule);
+                System.out.println(filterRule.getPackages().size());
+            });
         }
 
         @Override

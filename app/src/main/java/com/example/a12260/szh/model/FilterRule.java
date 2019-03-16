@@ -1,7 +1,9 @@
 package com.example.a12260.szh.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author 12260
@@ -11,7 +13,7 @@ public class FilterRule {
     public static FilterRule getDefaultRule() {
         FilterRule filterRule = new FilterRule();
         filterRule.setSelectPartOrAll(true);
-        filterRule.setPackages(new ArrayList<>());
+        filterRule.setPackages(new HashSet<>());
         return filterRule;
     }
 
@@ -24,11 +26,11 @@ public class FilterRule {
         return this;
     }
 
-    public List<String> getPackages() {
+    public Set<String> getPackages() {
         return packages;
     }
 
-    public FilterRule setPackages(List<String> packages) {
+    public FilterRule setPackages(Set<String> packages) {
         this.packages = packages;
         return this;
     }
@@ -37,6 +39,13 @@ public class FilterRule {
      * 是全选还是全不选
      */
     private boolean selectPartOrAll;
-    private List<String> packages;
+    private Set<String> packages;
 
+    @Override
+    public String toString() {
+        return "FilterRule{" +
+                "selectPartOrAll=" + selectPartOrAll +
+                ", packages=" + packages +
+                '}';
+    }
 }

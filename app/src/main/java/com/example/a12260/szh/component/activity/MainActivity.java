@@ -24,9 +24,9 @@ import com.example.a12260.szh.component.UsageCollectService;
 import com.example.a12260.szh.component.OnlyStatisticBottomAdapter;
 import com.example.a12260.szh.utils.CalendarUtils;
 import com.example.a12260.szh.utils.GreenDaoUtils;
+import com.example.a12260.szh.utils.MyApplication;
 import com.example.a12260.szh.utils.SharedPreferManager;
 import com.example.a12260.szh.utils.Server;
-import com.example.a12260.szh.utils.ServiceUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     void startMyService() {
-        if (!ServiceUtils.isServiceRunning(UsageCollectService.class)) {
+        if (!MyApplication.isServiceRunning(UsageCollectService.class)) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 startForegroundService(new Intent(this, UsageCollectService.class));
             } else {

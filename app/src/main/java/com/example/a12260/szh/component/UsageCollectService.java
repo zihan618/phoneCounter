@@ -17,6 +17,7 @@ import com.example.a12260.szh.R;
 import com.example.a12260.szh.component.activity.MainActivity;
 import com.example.a12260.szh.utils.GreenDaoUtils;
 import com.example.a12260.szh.utils.MyApplication;
+import com.example.a12260.szh.utils.SharedPreferManager;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -147,7 +148,9 @@ public class UsageCollectService extends Service {
                 //  totalToday += interval;
                 //save state
                 String foregroundPack = getForegroundPackage();
-                if (StringUtils.isNotBlank(foregroundPack) && !MyApplication.isSystemApplication(foregroundPack)) {
+                if (StringUtils.isNotBlank(foregroundPack)
+                        && !MyApplication.isSystemApplication(foregroundPack)
+                        && SharedPreferManager.canRecord(foregroundPack)) {
                     GreenDaoUtils.getInstance().updateDailyRecord(foregroundPack, interval);
                 }
             }
@@ -157,18 +160,6 @@ public class UsageCollectService extends Service {
                 e.printStackTrace();
             }
         }
-//            ActivityManager am = (ActivityManager) MyApplication.getContext()
-//                    .getSystemService(Activity.ACTIVITY_SERVICE);
-//            List<ActivityManager.RunningAppProcessInfo> tasks = am.getRunningAppProcesses();
-//            tasks.forEach(x -> System.out.println(x.processName));
-//            String packageName = am.getRunningTasks(1).get(0).topActivity
-//                    .getPackageName();
-//            long now = System.currentTimeMillis();
-//            GreenDaoUtils.getInstance().updateDailyRecord(packageName, now - lastTimestamp);
-//            lastTimestamp = now;
-//
-//            System.out.println(packageName);
-//            System.out.println(GreenDaoUtils.getInstance().getDailyRecordDao().loadAll());
     }
 
 }

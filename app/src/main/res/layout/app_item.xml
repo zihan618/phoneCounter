@@ -39,26 +39,16 @@
     <!--android:id="@+id/desc"-->
     <!--android:layout_width="0dp"-->
     <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginTop="4dp"-->
-    <!--android:layout_marginBottom="4dp"-->
-    <!--android:ellipsize="end"-->
-    <!--android:textColor="?android:attr/textColorTertiary"-->
-    <!--android:textSize="12sp"-->
-    <!--android:breakStrategy="high_quality"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--android:visibility="gone"-->
     <!--app:layout_constraintEnd_toEndOf="@+id/title"-->
     <!--app:layout_constraintStart_toStartOf="@+id/title"-->
-    <!--app:layout_constraintTop_toBottomOf="@+id/title"-->
-    <!--tools:text="com.package.name (10000)" />-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/title" />-->
 
     <Switch
         android:id="@+id/itemcheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

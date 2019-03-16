@@ -11,7 +11,7 @@ import com.example.a12260.szh.Entity.DailyRecord;
 import com.example.a12260.szh.R;
 import com.example.a12260.szh.component.activity.MainActivity;
 import com.example.a12260.szh.utils.GreenDaoUtils;
-import com.example.a12260.szh.utils.ServiceUtils;
+import com.example.a12260.szh.utils.MyApplication;
 
 import androidx.core.app.NotificationCompat;
 
@@ -39,7 +39,7 @@ public class ActonTickReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         init(context);
-        if (!ServiceUtils.isServiceRunning(UsageCollectService.class)) {
+        if (!MyApplication.isServiceRunning(UsageCollectService.class)) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 context.startForegroundService(new Intent(context, UsageCollectService.class));
             } else {
