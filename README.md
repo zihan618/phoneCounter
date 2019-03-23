@@ -1,25 +1,24 @@
 # phone counter
 
-## an app which helps you record the time you spent on your mobile phone(Android)
+## **an app which helps you record the time you spent on your mobile phone(Android)**
 
 ## maily including following features:
 
-* ### record daily, weekly, monthly aggregated records about total time and single app's time
+- record daily, weekly, monthly aggregated records about total time and single app's time
 
-* ### custom filtering rule deciding what apps' time will be recorded
+- custom filtering rule deciding what apps' time will be recorded
 
-***
 
 ## used open source framework
 
-* ### greenDao ORM framework
-* ### materialCalendarView 
-* ### helloCharts
+- greenDao ORM framework
+- materialCalendarView 
+- helloCharts
 
-## other alternative chart framework for data visualization 
+## other alternative chart framework for data visualization
 
-* ### mpAndroidChart
-* ### eazeChart
+- mpAndroidChart
+- eazeChart
 
 ## demo
 
